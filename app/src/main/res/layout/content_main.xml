@@ -14,7 +14,173 @@
     tools:showIn="@layout/activity_main">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/heart_rate_label"
+        style="@style/label"
+        android:text="Pulse / Heart Rate (BPM) :" />
+
+    <TextView
+        android:id="@+id/heart_rate_value"
+        style="@style/value"
+        android:layout_alignBottom="@id/heart_rate_label"
+        android:layout_toRightOf="@id/heart_rate_label"
+        android:text="_ _ " />
+
+    <TextView
+        android:id="@+id/skin_conductance_label"
+        style="@style/label"
+        android:layout_below="@id/heart_rate_label"
+        android:text="Skin Conductance (μs) :" />
+
+    <TextView
+        android:id="@+id/skin_conductance_value"
+        style="@style/value"
+        android:layout_alignBottom="@id/skin_conductance_label"
+        android:layout_alignRight="@id/heart_rate_value"
+        android:text="_ _ " />
+
+    <TextView
+        android:id="@+id/temperature_label"
+        style="@style/label"
+        android:layout_below="@id/skin_conductance_label"
+        android:text="Temperature (°C) :" />
+
+    <TextView
+        android:id="@+id/temperature_value"
+        style="@style/value"
+        android:layout_alignBottom="@id/temperature_label"
+        android:layout_alignRight="@id/heart_rate_value"
+        android:text="_ _ " />
+
+    <TableLayout
+        android:id="@+id/emotion_table"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="You are feeling happy" />
+        android:layout_alignParentBottom="true"
+        android:gravity="center">
+
+        <TableRow
+            android:id="@+id/tableRow1"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/emotion_happy"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginRight="24dp"
+                android:layout_marginLeft="24dp"
+                android:background="@drawable/excited_smiley_face"
+                android:backgroundTint="@color/teal" />
+
+            <Button
+                android:id="@+id/emotion_neutral"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp"
+                android:background="@drawable/neutral_smiley_face"
+                android:backgroundTint="@color/yellow" />
+
+            <Button
+                android:id="@+id/emotion_sad"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp"
+                android:background="@drawable/unhappy_face"
+                android:backgroundTint="@color/blue" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow_labels"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="12dp"
+            android:gravity="center">
+
+            <TextView
+            android:id="@+id/happy_label"
+                android:layout_marginRight="24dp"
+                android:layout_marginLeft="24dp"
+                android:gravity="center"
+                android:text="Happy" />
+
+            <TextView
+                android:id="@+id/neutral_label"
+                android:gravity="center"
+                android:layout_marginRight="24dp"
+                android:layout_marginLeft="24dp"
+                android:text="Neutral" />
+
+            <TextView
+                android:id="@+id/sad_label"
+                android:gravity="center"
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp"
+                android:text="Sad" />
+
+            </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow2"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center">
+
+
+            <Button
+                android:id="@+id/emotion_angry"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginRight="24dp"
+                android:layout_marginLeft="24dp"
+                android:background="@drawable/angry_smiley_face"
+                android:backgroundTint="@color/red" />
+
+            <Button
+                android:id="@+id/emotion_confused"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp"
+                android:background="@drawable/unknown_smiley_face"
+                android:backgroundTint="@color/orange" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow_labels_2"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/angry_label"
+                android:layout_marginRight="24dp"
+                android:layout_marginLeft="24dp"
+                android:gravity="center"
+                android:text="Angry" />
+
+            <TextView
+                android:id="@+id/confused_label"
+                android:gravity="center"
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp"
+                android:text="Confused" />
+
+        </TableRow>
+
+    </TableLayout>
+
+    <TextView
+        android:id="@+id/emotion_title"
+        style="@style/title"
+        android:layout_above="@id/emotion_table"
+        android:text="I'm feeling..." />
+
 </RelativeLayout>
