@@ -9,7 +9,19 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class MainActivity extends AppCompatActivity {
+
+    private Timer mTimer;			//used to update UI
+    private TimerTask mTimerTask;	//used to update UI
+
+    public float[] mData;			//used to keep/update data from device's channels
+    public String deviceName;		//use to have the device name chosen
+
+    private BluetoothDialog mBluetoothDialog;	//used to show dialogs to chose the device
+    private ManagerDevice mManagerDevice;		//used to manager informations from framework
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,15 +30,13 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-       /* FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-        */
+        // mData = new float[Data.ARRAY_SIZE];
+
+        //manager device
+        mManagerDevice = new ManagerDevice(this);
+
+        //create bluetooth dialog service
+        mBluetoothDialog = new BluetoothDialog(this, mManagerDevice.getDeviceService());
     }
 
     @Override
@@ -46,6 +56,14 @@ public class MainActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        } else if (id == R.id.connect_device) {
+            if (mManagerDevice.getDeviceService().isBTEnabled()) {
+                //show list of devices paired
+                mBluetoothDialog.showDeviceList();
+            } else {
+                // enable Bluetooth first and show list of devices paired
+                mBluetoothDialog.showEnableBTDialog();
+            }
         }
 
         return super.onOptionsItemSelected(item);
