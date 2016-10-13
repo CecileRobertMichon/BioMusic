@@ -75,22 +75,22 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 		
 		switch (newState) {
 		
-	/*	case CONNECT_SUCCESS:
+		case CONNECT_SUCCESS:
 			registerTpsDataListener();			//register listeners
 			mActivity.startUpdateUIDataTimer();	//start timer to update UI
-			mActivity.toastMessage(mActivity.deviceName + " connected sucessfully!");
+			mActivity.toastMessage("Connected successfully!");
 			break;
 			
 		case CONNECT_FAILURE:
-			mActivity.toastMessage("Fail to connect "+ mActivity.deviceName);
+			mActivity.toastMessage("Failed to connect ");
 			break;
 		
 		case DISCONNECTED:
-			mActivity.stoptUpdateUIDataTimer();
-			mActivity.toastMessage(mActivity.deviceName + " is disconnected.");
+			mActivity.stopUpdateUIDataTimer();
+			mActivity.toastMessage("Disconnected.");
 			break;
 		
-		case BATTERY_STATE_CHANGE:
+	/*	case BATTERY_STATE_CHANGE:
 			mActivity.showBatteryInfo(bundle.getInt(DeviceStatus.BATTERY_STATE_CHANGE.name()));
 			break;
 		
@@ -126,7 +126,7 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 	private void registerTpsDataListener() {
 		
 
-		/* mDeviceService.addListener(new HeartRateListener() {
+		 mDeviceService.addListener(new HeartRateListener() {
 			@Override
 			public void onHeartRate(float hr) {
 				//receive HeartRate data
@@ -142,13 +142,13 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 			}
 		});
 		
-		mDeviceService.addListener(new StressIndexListener() {
-			@Override
-			public void onStressIndex(float si) {
-				//receive StressIndex data
-				mActivity.mData[Data.TYPE_SI] = si;
-			}
-		}); 
+//		mDeviceService.addListener(new StressIndexListener() {
+//			@Override
+//			public void onStressIndex(float si) {
+//				//receive StressIndex data
+//				mActivity.mData[Data.TYPE_SI] = si;
+//			}
+//		});
 		
 		mDeviceService.addListener(new TemperatureListener() {
 			@Override
@@ -158,25 +158,25 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 			}
 		});
 		
-		mDeviceService.addListener(new BvpListener() {
-			@Override
-			public void onBvp(float bvp) {
-				//receive Blood Volume Pulse data
-				mActivity.mData[Data.TYPE_BVP] = bvp;
-			}
-		});
+//		mDeviceService.addListener(new BvpListener() {
+//			@Override
+//			public void onBvp(float bvp) {
+//				//receive Blood Volume Pulse data
+//				mActivity.mData[Data.TYPE_BVP] = bvp;
+//			}
+//		});
 		
-		mDeviceService.addListener(new HrvListener() {
-			@Override
-			public void onHrv(float vlf, float lf, float hf) {
-				//receive Very Low Frequency data
-				mActivity.mData[Data.TYPE_VLF] = vlf;
-				//receive Low Frequency data
-				mActivity.mData[Data.TYPE_LF]  = lf;
-				//receive High Frequency data				
-				mActivity.mData[Data.TYPE_HF]  = hf;
-			}
-		}); */
+//		mDeviceService.addListener(new HrvListener() {
+//			@Override
+//			public void onHrv(float vlf, float lf, float hf) {
+//				//receive Very Low Frequency data
+//				mActivity.mData[Data.TYPE_VLF] = vlf;
+//				//receive Low Frequency data
+//				mActivity.mData[Data.TYPE_LF]  = lf;
+//				//receive High Frequency data
+//				mActivity.mData[Data.TYPE_HF]  = hf;
+//			}
+//		});
 	}
 
 }

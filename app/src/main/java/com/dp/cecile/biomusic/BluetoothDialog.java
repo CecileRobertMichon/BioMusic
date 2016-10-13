@@ -23,6 +23,8 @@ public class BluetoothDialog {
 	
 	private ProgressDialog mProgressDialog;
 	private DeviceService mDeviceService;
+
+	private String mDeviceName;
 	
 	/**
 	 * Constructor
@@ -88,7 +90,11 @@ public class BluetoothDialog {
 				
 				dialog.dismiss();
 				
-				// TODO : Connect to bluetooth
+				// update device
+				mDeviceName = (deviceList.get(which));
+
+                // connect to device
+                ((MainActivity)mActivity).connectDevice(mDeviceName);
 			}
 		});
 	}

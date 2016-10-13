@@ -23,7 +23,7 @@
         style="@style/value"
         android:layout_alignBottom="@id/heart_rate_label"
         android:layout_toRightOf="@id/heart_rate_label"
-        android:text="_ _ " />
+        android:text="_ _" />
 
     <TextView
         android:id="@+id/skin_conductance_label"
@@ -36,7 +36,7 @@
         style="@style/value"
         android:layout_alignBottom="@id/skin_conductance_label"
         android:layout_alignRight="@id/heart_rate_value"
-        android:text="_ _ " />
+        android:text="_ _" />
 
     <TextView
         android:id="@+id/temperature_label"
@@ -49,7 +49,7 @@
         style="@style/value"
         android:layout_alignBottom="@id/temperature_label"
         android:layout_alignRight="@id/heart_rate_value"
-        android:text="_ _ " />
+        android:text="_ _" />
 
     <TableLayout
         android:id="@+id/emotion_table"
