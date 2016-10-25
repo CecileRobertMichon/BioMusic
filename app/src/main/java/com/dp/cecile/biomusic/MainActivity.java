@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
             sleep(interval);
             Log.d("Music", "Play sound");
             Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-            vibrator.vibrate(800);
+            vibrator.vibrate(100);
         } catch (Exception e) {
             e.printStackTrace();
         }
