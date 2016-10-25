@@ -1,12 +1,13 @@
 package com.dp.cecile.biomusic;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.os.Handler;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -15,15 +16,18 @@ import android.widget.Toast;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static java.lang.Thread.sleep;
+
 public class MainActivity extends AppCompatActivity {
 
-    private Timer mTimer;			//used to update UI
-    private TimerTask mTimerTask;	//used to update UI
+    private Timer mTimer;            //used to update UI
+    private TimerTask mTimerTask;    //used to update UI
+    private Handler mHandler;
 
-    public float[] mData;			//used to keep/update data from device's channels
+    public float[] mData;            //used to keep/update data from device's channels
 
-    private BluetoothDialog mBluetoothDialog;	//used to show dialogs to chose the device
-    private ManagerDevice mManagerDevice;		//used to manager informations from framework
+    private BluetoothDialog mBluetoothDialog;    //used to show dialogs to chose the device
+    private ManagerDevice mManagerDevice;        //used to manager informations from framework
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         mData = new float[Data.ARRAY_SIZE];
+        mHandler = new Handler();
 
         //manager device
         mManagerDevice = new ManagerDevice(this);
@@ -47,6 +52,9 @@ public class MainActivity extends AppCompatActivity {
         //stop update UI
         stopUpdateUIDataTimer();
 
+        // stop music
+        mHandler.removeCallbacks(mMusic);
+
         //destroy manager device framework
         if (mManagerDevice.getDeviceService() != null)
             mManagerDevice.getDeviceService().onDestroy();
@@ -56,13 +64,16 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Return it self.
+     *
      * @return MainActivity instance
      */
     private Activity getSelf() {
         return this;
     }
+
     /**
      * Show Toast message to UI
+     *
      * @param message
      */
 
@@ -91,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.disconnect_device) {
+            clearTextView();
             mManagerDevice.getDeviceService().disconnect();
         } else if (id == R.id.connect_device) {
             if (mManagerDevice.getDeviceService().isBTEnabled()) {
@@ -118,9 +130,27 @@ public class MainActivity extends AppCompatActivity {
      * Update the UI
      */
     private void updateUI() {
-        ((TextView)findViewById(R.id.skin_conductance_value)).setText(String.format("%.2f",   mData[Data.TYPE_SC]));
-        ((TextView)findViewById(R.id.temperature_value)).setText(String.format("%.2f", mData[Data.TYPE_TEMP]));
-        ((TextView)findViewById(R.id.heart_rate_value)).setText(String.format("%.2f",   mData[Data.TYPE_HR]));
+        ((TextView) findViewById(R.id.skin_conductance_value)).setText(String.format("%.2f", mData[Data.TYPE_SC]));
+        ((TextView) findViewById(R.id.temperature_value)).setText(String.format("%.2f", mData[Data.TYPE_TEMP]));
+        ((TextView) findViewById(R.id.heart_rate_value)).setText(String.format("%.2f", mData[Data.TYPE_HR]));
+    }
+
+    // play heart rate sound
+    private void playHR() {
+        float hr = mData[Data.TYPE_HR];
+        long interval = 0;
+        if (hr != 0) {
+            interval = (long) 60000.0 / (long) hr;
+        }
+        Log.d("Music","interval is : " + interval);
+        try {
+            sleep(interval);
+            Log.d("Music", "Play sound");
+            Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+            vibrator.vibrate(800);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -128,9 +158,9 @@ public class MainActivity extends AppCompatActivity {
      * Reset all TextView.
      */
     private void clearTextView() {
-        ((TextView)findViewById(R.id.skin_conductance_value)).setText("_ _");
-        ((TextView)findViewById(R.id.temperature_value)).setText("_ _");
-        ((TextView)findViewById(R.id.heart_rate_value)).setText("_ _");
+        ((TextView) findViewById(R.id.skin_conductance_value)).setText("_ _");
+        ((TextView) findViewById(R.id.temperature_value)).setText("_ _");
+        ((TextView) findViewById(R.id.heart_rate_value)).setText("_ _");
     }
 
     ///// TIMER TO UPDATE UI FROM DEVICE'S VALUES /////
@@ -139,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
      * Start timer to update UI using data received from device
      */
     public void startUpdateUIDataTimer() {
-        mTimer     = new Timer();
+        mTimer = new Timer();
         mTimerTask = new TimerTask() {
             @Override
             public void run() {
@@ -147,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         updateUI();
+                        //  playHR();
                     }
                 });
             }
@@ -163,9 +194,27 @@ public class MainActivity extends AppCompatActivity {
             mTimerTask = null;
         }
         if (null != mTimer) {
-            mTimer.cancel( );
+            mTimer.cancel();
             mTimer.purge();
             mTimer = null;
         }
+    }
+
+    Runnable mMusic = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                // TODO : MATTHIEU replace this by your bvp method
+                playHR();
+            } finally {
+                // 100% guarantee that this always happens, even if
+                // your update method throws an exception
+                mHandler.postDelayed(mMusic, 300);
+            }
+        }
+    };
+
+    public void startMusic() {
+        mMusic.run();
     }
 }

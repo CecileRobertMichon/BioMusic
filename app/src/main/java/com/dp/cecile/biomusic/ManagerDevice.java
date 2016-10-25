@@ -78,6 +78,7 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 		case CONNECT_SUCCESS:
 			registerTpsDataListener();			//register listeners
 			mActivity.startUpdateUIDataTimer();	//start timer to update UI
+			mActivity.startMusic();
 			mActivity.toastMessage("Connected successfully!");
 			break;
 			
