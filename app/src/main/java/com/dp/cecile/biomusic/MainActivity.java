@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         stopUpdateUIDataTimer();
 
         // stop music
-        mHandler.removeCallbacks(mMusic);
+        stopMusic();
 
         //destroy manager device framework
         if (mManagerDevice.getDeviceService() != null)
@@ -216,5 +216,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void startMusic() {
         mMusic.run();
+    }
+
+    public void stopMusic() {
+        mHandler.removeCallbacks(mMusic);
     }
 }

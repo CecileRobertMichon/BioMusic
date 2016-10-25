@@ -88,6 +88,7 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 		
 		case DISCONNECTED:
 			mActivity.stopUpdateUIDataTimer();
+			mActivity.stopMusic();
 			mActivity.toastMessage("Disconnected.");
 			break;
 		
