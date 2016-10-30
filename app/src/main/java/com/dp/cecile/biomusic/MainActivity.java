@@ -153,6 +153,22 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //vibrate phone according to BVP signal
+    private void playBVP() {
+        float bvp = mData[Data.TYPE_BVP];
+        float threshold = 30;
+        long i = 500;
+        try {
+            Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+            if (bvp > threshold) {
+                vibrator.vibrate(100);
+                sleep(i);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     /**
      * Reset all TextView.
@@ -205,6 +221,7 @@ public class MainActivity extends AppCompatActivity {
         public void run() {
             try {
                 // TODO : MATTHIEU replace this by your bvp method
+                //playBVP();
                 playHR();
             } finally {
                 // 100% guarantee that this always happens, even if
