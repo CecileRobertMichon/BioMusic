@@ -6,6 +6,8 @@
         android:minSdkVersion="16"
         android:targetSdkVersion="19" />
 
+    <uses-feature android:name="android.software.midi" android:required="true"/>
+
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />

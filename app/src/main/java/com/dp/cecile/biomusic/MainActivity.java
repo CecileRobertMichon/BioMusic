@@ -2,6 +2,7 @@ package com.dp.cecile.biomusic;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
@@ -10,6 +11,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +47,16 @@ public class MainActivity extends AppCompatActivity {
 
         //create bluetooth dialog service
         mBluetoothDialog = new BluetoothDialog(this, mManagerDevice.getDeviceService());
+
+        Button playButton = (Button) this.findViewById(R.id.emotion_happy);
+        playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_MIDI)) {
+                    // do MIDI stuff
+                }
+            }
+        });
     }
 
     @Override
@@ -221,8 +234,8 @@ public class MainActivity extends AppCompatActivity {
         public void run() {
             try {
                 // TODO : MATTHIEU replace this by your bvp method
-                //playBVP();
-                playHR();
+                playBVP();
+                //playHR();
             } finally {
                 // 100% guarantee that this always happens, even if
                 // your update method throws an exception
