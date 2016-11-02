@@ -3,6 +3,7 @@ package com.dp.cecile.biomusic;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
@@ -21,7 +22,7 @@ import java.util.TimerTask;
 
 import static java.lang.Thread.sleep;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MidiDriver.OnMidiStartListener {
 
     private Timer mTimer;            //used to update UI
     private TimerTask mTimerTask;    //used to update UI
@@ -31,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
 
     private BluetoothDialog mBluetoothDialog;    //used to show dialogs to chose the device
     private ManagerDevice mManagerDevice;        //used to manager informations from framework
+    protected MidiDriver midi;
+    protected MediaPlayer player;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +47,12 @@ public class MainActivity extends AppCompatActivity {
 
         //manager device
         mManagerDevice = new ManagerDevice(this);
+
+        // Create midi driver
+        midi = new MidiDriver();
+
+        if (midi != null)
+            midi.setOnMidiStartListener(this);
 
         //create bluetooth dialog service
         mBluetoothDialog = new BluetoothDialog(this, mManagerDevice.getDeviceService());
@@ -121,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
             if (mManagerDevice.getDeviceService().isBTEnabled()) {
                 //show list of devices paired
                 mBluetoothDialog.showDeviceList();
+                sendMidi(0xc0, 6);
             } else {
                 // enable Bluetooth first and show list of devices paired
                 mBluetoothDialog.showEnableBTDialog();
@@ -234,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
         public void run() {
             try {
                 // TODO : MATTHIEU replace this by your bvp method
-                playBVP();
+                // playBVP();
                 //playHR();
             } finally {
                 // 100% guarantee that this always happens, even if
@@ -250,5 +260,42 @@ public class MainActivity extends AppCompatActivity {
 
     public void stopMusic() {
         mHandler.removeCallbacks(mMusic);
+    }
+
+    // Listener for sending initial midi messages when the Sonivox
+    // synthesizer has been started, such as program change.
+
+    @Override
+    public void onMidiStart()
+    {
+        // Program change - harpsicord
+
+        sendMidi(0xc0, 6);
+
+    }
+
+    // Send a midi message
+
+    protected void sendMidi(int m, int p)
+    {
+        byte msg[] = new byte[2];
+
+        msg[0] = (byte) m;
+        msg[1] = (byte) p;
+
+        midi.write(msg);
+    }
+
+    // Send a midi message
+
+    protected void sendMidi(int m, int n, int v)
+    {
+        byte msg[] = new byte[3];
+
+        msg[0] = (byte) m;
+        msg[1] = (byte) n;
+        msg[2] = (byte) v;
+
+        midi.write(msg);
     }
 }

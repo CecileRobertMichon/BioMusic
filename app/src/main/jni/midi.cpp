@@ -44,7 +44,7 @@
 #include <SLES/OpenSLES.h>
 #include <SLES/OpenSLES_Android.h>
 
-#include "org_billthefarmer_mididriver_MidiDriver.h"
+#include "com_dp_cecile_biomusic_MidiDriver.h"
 
 // for EAS midi
 #include "eas.h"
@@ -321,7 +321,7 @@ void shutdownEAS()
 
 // init mididriver
 jboolean
-Java_org_billthefarmer_mididriver_MidiDriver_init(JNIEnv *env,
+Java_com_dp_cecile_biomusic_MidiDriver_init(JNIEnv *env,
 						  jobject obj)
 {
     EAS_RESULT result;
@@ -382,7 +382,7 @@ Java_org_billthefarmer_mididriver_MidiDriver_init(JNIEnv *env,
 
 // midi config
 jintArray
-Java_org_billthefarmer_mididriver_MidiDriver_config(JNIEnv *env,
+Java_com_dp_cecile_biomusic_MidiDriver_config(JNIEnv *env,
 						    jobject obj)
 {
     jboolean isCopy;
@@ -406,7 +406,7 @@ Java_org_billthefarmer_mididriver_MidiDriver_config(JNIEnv *env,
 
 // midi write
 jboolean
-Java_org_billthefarmer_mididriver_MidiDriver_write(JNIEnv *env,
+Java_com_dp_cecile_biomusic_MidiDriver_write(JNIEnv *env,
 						   jobject obj,
 						   jbyteArray byteArray)
 {
@@ -439,7 +439,7 @@ Java_org_billthefarmer_mididriver_MidiDriver_write(JNIEnv *env,
 
 // shutdown EAS midi
 jboolean
-Java_org_billthefarmer_mididriver_MidiDriver_shutdown(JNIEnv *env,
+Java_com_dp_cecile_biomusic_MidiDriver_shutdown(JNIEnv *env,
 						      jobject obj)
 {
     EAS_RESULT result;
