@@ -22,7 +22,7 @@ import java.util.TimerTask;
 
 import static java.lang.Thread.sleep;
 
-public class MainActivity extends AppCompatActivity implements MidiDriver.OnMidiStartListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, MidiDriver.OnMidiStartListener {
 
     private Timer mTimer;            //used to update UI
     private TimerTask mTimerTask;    //used to update UI
@@ -53,6 +53,15 @@ public class MainActivity extends AppCompatActivity implements MidiDriver.OnMidi
 
         if (midi != null)
             midi.setOnMidiStartListener(this);
+
+        View v = findViewById(R.id.emotion_happy);
+        if (v != null)
+            Log.d("clicked", "on click listener happy");
+            v.setOnClickListener(this);
+
+        v = findViewById(R.id.emotion_angry);
+        if (v != null)
+            v.setOnClickListener(this);
 
         //create bluetooth dialog service
         mBluetoothDialog = new BluetoothDialog(this, mManagerDevice.getDeviceService());
@@ -130,7 +139,6 @@ public class MainActivity extends AppCompatActivity implements MidiDriver.OnMidi
             if (mManagerDevice.getDeviceService().isBTEnabled()) {
                 //show list of devices paired
                 mBluetoothDialog.showDeviceList();
-                sendMidi(0xc0, 6);
             } else {
                 // enable Bluetooth first and show list of devices paired
                 mBluetoothDialog.showEnableBTDialog();
@@ -147,6 +155,32 @@ public class MainActivity extends AppCompatActivity implements MidiDriver.OnMidi
         }
         clearTextView();
         mManagerDevice.connectDevice(device);
+    }
+
+    @Override
+    public void onClick(View v)
+    {
+        int id = v.getId();
+
+        switch (id)
+        {
+            case R.id.emotion_happy:
+                Log.d("clicked", "happy click");
+                if (player != null)
+                    player.stop();
+                break;
+
+            case R.id.emotion_angry:
+                Log.d("clicked", "angry click");
+                if (player != null)
+                {
+                    player.stop();
+                    player.release();
+                }
+                player = MediaPlayer.create(this, R.raw.ants);
+                player.start();
+                break;
+        }
     }
 
     /**
