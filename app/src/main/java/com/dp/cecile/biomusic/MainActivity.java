@@ -16,19 +16,24 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.view.MotionEvent;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.ArrayList;
 
 import static java.lang.Thread.sleep;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, MidiDriver.OnMidiStartListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, View.OnTouchListener, MidiDriver.OnMidiStartListener {
 
     private Timer mTimer;            //used to update UI
     private TimerTask mTimerTask;    //used to update UI
     private Handler mHandler;
 
     public float[] mData;            //used to keep/update data from device's channels
+    ArrayList<Float> HR_data = new ArrayList<Float>();
+    ArrayList<Float> SC_data = new ArrayList<Float>();
+    ArrayList<Float> TEMP_data = new ArrayList<Float>();
 
     private BluetoothDialog mBluetoothDialog;    //used to show dialogs to chose the device
     private ManagerDevice mManagerDevice;        //used to manager informations from framework
@@ -37,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -48,12 +54,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //manager device
         mManagerDevice = new ManagerDevice(this);
 
+        //create bluetooth dialog service
+        mBluetoothDialog = new BluetoothDialog(this, mManagerDevice.getDeviceService());
+
         // Create midi driver
         midi = new MidiDriver();
 
+        // Set on midi start listener
         if (midi != null)
             midi.setOnMidiStartListener(this);
 
+        //Set on click listener
         View v = findViewById(R.id.emotion_happy);
         if (v != null)
             Log.d("clicked", "on click listener happy");
@@ -63,25 +74,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (v != null)
             v.setOnClickListener(this);
 
-        //create bluetooth dialog service
-        mBluetoothDialog = new BluetoothDialog(this, mManagerDevice.getDeviceService());
+        //Set on touch listener
+        v = findViewById(R.id.emotion_neutral);
+        if (v != null)
+            v.setOnTouchListener(this);
 
-        Button playButton = (Button) this.findViewById(R.id.emotion_happy);
-        playButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_MIDI)) {
-                    // do MIDI stuff
-                }
-            }
-        });
+        v = findViewById(R.id.emotion_sad);
+        if (v != null)
+            v.setOnTouchListener(this);
+
+
+//        Button playButton = (Button) this.findViewById(R.id.emotion_happy);
+//        playButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_MIDI)) {
+//                    // do MIDI stuff
+//                }
+//            }
+//        });
     }
+
 
     @Override
     protected void onDestroy() {
 
         //stop update UI
         stopUpdateUIDataTimer();
+
+        // Stop midi
+        if (midi != null)
+            midi.stop();
+
+        // Stop player
+        if (player != null)
+            player.stop();
 
         // stop music
         stopMusic();
@@ -92,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         super.onDestroy();
     }
+
 
     /**
      * Return it self.
@@ -143,7 +171,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // enable Bluetooth first and show list of devices paired
                 mBluetoothDialog.showEnableBTDialog();
             }
+        } else if (id == R.id.start_midi){
+            if (midi != null)
+                midi.start();
         }
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -157,6 +189,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mManagerDevice.connectDevice(device);
     }
 
+
+
     @Override
     public void onClick(View v)
     {
@@ -166,8 +200,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         {
             case R.id.emotion_happy:
                 Log.d("clicked", "happy click");
-                if (player != null)
+                if (player != null) {
                     player.stop();
+                }
                 break;
 
             case R.id.emotion_angry:
@@ -183,13 +218,75 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    @Override
+    public boolean onTouch(View v, MotionEvent event){
+        int action = event.getAction();
+        int id = v.getId();
+
+        switch (action)
+        {
+            // Down
+            case MotionEvent.ACTION_DOWN:
+                switch (id)
+                {
+                    case R.id.emotion_neutral:
+                        sendMidi(0x90, 48, 63);
+                        sendMidi(0x90, 52, 63);
+                        sendMidi(0x90, 55, 63);
+                        break;
+
+                    case R.id.emotion_sad:
+                        sendMidi(0x90, 55, 63);
+                        sendMidi(0x90, 59, 63);
+                        sendMidi(0x90, 62, 63);
+                        break;
+
+                    default:
+                        return false;
+                }
+                break;
+
+            // Up
+
+            case MotionEvent.ACTION_UP:
+                switch (id)
+                {
+                    case R.id.emotion_neutral:
+                        sendMidi(0x80, 48, 0);
+                        sendMidi(0x80, 52, 0);
+                        sendMidi(0x80, 55, 0);
+                        break;
+
+                    case R.id.emotion_sad:
+                        sendMidi(0x80, 55, 0);
+                        sendMidi(0x80, 59, 0);
+                        sendMidi(0x80, 62, 0);
+                        break;
+
+                    default:
+                        return false;
+                }
+                break;
+
+            default:
+                return false;
+        }
+
+        return false;
+    }
+
+
     /**
      * Update the UI
      */
     private void updateUI() {
+        SC_data.add(mData[Data.TYPE_SC]);
+        TEMP_data.add(mData[Data.TYPE_TEMP]);
+        HR_data.add(mData[Data.TYPE_HR]);
         ((TextView) findViewById(R.id.skin_conductance_value)).setText(String.format("%.2f", mData[Data.TYPE_SC]));
         ((TextView) findViewById(R.id.temperature_value)).setText(String.format("%.2f", mData[Data.TYPE_TEMP]));
         ((TextView) findViewById(R.id.heart_rate_value)).setText(String.format("%.2f", mData[Data.TYPE_HR]));
+        //((TextView) findViewById(R.id.heart_rate_value)).setText(String.format("%.2f", SC_data.get(0)));
     }
 
     // play heart rate sound
@@ -250,7 +347,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void run() {
                         updateUI();
-                        //  playHR();
                     }
                 });
             }
@@ -278,7 +374,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void run() {
             try {
                 // TODO : MATTHIEU replace this by your bvp method
-                // playBVP();
+                //playBVP();
                 //playHR();
             } finally {
                 // 100% guarantee that this always happens, even if
@@ -288,9 +384,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     };
 
-    public void startMusic() {
-        mMusic.run();
-    }
+    public void startMusic() { mMusic.run(); }
 
     public void stopMusic() {
         mHandler.removeCallbacks(mMusic);
