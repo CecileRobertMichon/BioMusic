@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public float[] mData;            //used to keep/update data from device's channels
     ArrayList<Float> HR_data = new ArrayList<Float>();
+    ArrayList<Float> BVP_data = new ArrayList<Float>();
     ArrayList<Float> SC_data = new ArrayList<Float>();
     ArrayList<Float> TEMP_data = new ArrayList<Float>();
 
@@ -280,13 +281,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * Update the UI
      */
     private void updateUI() {
+        //add data to the array lists
         SC_data.add(mData[Data.TYPE_SC]);
         TEMP_data.add(mData[Data.TYPE_TEMP]);
         HR_data.add(mData[Data.TYPE_HR]);
+        BVP_data.add(mData[Data.TYPE_BVP]);
+
+        //remove data once arraylist has more than 50 elements
+        //this keeps the size of the window limited to 50 elements
+        if (SC_data.size() > 50 ){
+            SC_data.remove(0);
+            TEMP_data.remove(0);
+            HR_data.remove(0);
+            BVP_data.remove(0);
+        }
         ((TextView) findViewById(R.id.skin_conductance_value)).setText(String.format("%.2f", mData[Data.TYPE_SC]));
         ((TextView) findViewById(R.id.temperature_value)).setText(String.format("%.2f", mData[Data.TYPE_TEMP]));
         ((TextView) findViewById(R.id.heart_rate_value)).setText(String.format("%.2f", mData[Data.TYPE_HR]));
-        //((TextView) findViewById(R.id.heart_rate_value)).setText(String.format("%.2f", SC_data.get(0)));
+        //((TextView) findViewById(R.id.heart_rate_value)).setText(String.format("%d", BVP_data.size()));
+
     }
 
     // play heart rate sound
@@ -373,7 +386,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void run() {
             try {
-                // TODO : MATTHIEU replace this by your bvp method
                 //playBVP();
                 //playHR();
             } finally {
