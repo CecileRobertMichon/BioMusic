@@ -160,13 +160,13 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 			}
 		});
 		
-//		mDeviceService.addListener(new BvpListener() {
-//			@Override
-//			public void onBvp(float bvp) {
-//				//receive Blood Volume Pulse data
-//				mActivity.mData[Data.TYPE_BVP] = bvp;
-//			}
-//		});
+		mDeviceService.addListener(new BvpListener() {
+			@Override
+			public void onBvp(float bvp) {
+				//receive Blood Volume Pulse data
+				mActivity.mData[Data.TYPE_BVP] = bvp;
+			}
+		});
 		
 //		mDeviceService.addListener(new HrvListener() {
 //			@Override

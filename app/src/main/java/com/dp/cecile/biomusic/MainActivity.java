@@ -84,7 +84,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (v != null)
             v.setOnTouchListener(this);
 
-
 //        Button playButton = (Button) this.findViewById(R.id.emotion_happy);
 //        playButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -295,6 +294,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             HR_data.remove(0);
             BVP_data.remove(0);
         }
+
+        if (SC_data.size() < 25){
+            ((TextView) findViewById(R.id.init_label)).setText(String.format("Initializing..."));
+        } else {
+            ((TextView) findViewById(R.id.init_label)).setText(String.format(""));
+        }
+
         ((TextView) findViewById(R.id.skin_conductance_value)).setText(String.format("%.2f", mData[Data.TYPE_SC]));
         ((TextView) findViewById(R.id.temperature_value)).setText(String.format("%.2f", mData[Data.TYPE_TEMP]));
         ((TextView) findViewById(R.id.heart_rate_value)).setText(String.format("%.2f", mData[Data.TYPE_HR]));
@@ -322,18 +328,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //vibrate phone according to BVP signal
     private void playBVP() {
-        float bvp = mData[Data.TYPE_BVP];
-        float threshold = 30;
-        long i = 500;
-        try {
-            Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-            if (bvp > threshold) {
-                vibrator.vibrate(100);
-                sleep(i);
+        Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        int i = 0;
+        int samp_size = 25;
+        boolean ascending;
+
+        if (BVP_data.size() > samp_size) {
+            if ( BVP_data.get(i) < BVP_data.get(i+1) ) {
+                ascending = true;
+            }  else {
+                ascending = false;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+
+            while (ascending) {
+                while (BVP_data.get(i) < BVP_data.get(i+1)){
+                    i += 1;
+                    if (i == samp_size - 1) {
+                        i = i - samp_size;
+                    }
+                }
+                vibrator.vibrate(100);
+                ascending = false;
+            }
+
+            while (!ascending) {
+                while (BVP_data.get(i) > BVP_data.get(i+1)){
+                    i += 1;
+                    if (i == samp_size - 1) {
+                        i = i - samp_size;
+                    }
+                }
+                ascending = true;
+            }
+
         }
+
     }
 
 
@@ -386,7 +415,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void run() {
             try {
-                //playBVP();
+                playBVP();
                 //playHR();
             } finally {
                 // 100% guarantee that this always happens, even if
