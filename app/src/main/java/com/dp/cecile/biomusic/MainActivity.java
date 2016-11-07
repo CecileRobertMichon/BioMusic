@@ -19,6 +19,7 @@ import android.widget.Toast;
 import android.view.MotionEvent;
 import org.billthefarmer.mididriver.MidiDriver;
 
+import java.io.FileOutputStream;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.ArrayList;
@@ -32,10 +33,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Handler mHandler;
 
     public float[] mData;            //used to keep/update data from device's channels
-    ArrayList<Float> HR_data = new ArrayList<Float>();
-    ArrayList<Float> BVP_data = new ArrayList<Float>();
-    ArrayList<Float> SC_data = new ArrayList<Float>();
-    ArrayList<Float> TEMP_data = new ArrayList<Float>();
+    public ArrayList<Float> HR_data = new ArrayList<Float>();
+    public ArrayList<Float> BVP_data = new ArrayList<Float>();
+    public ArrayList<Float> SC_data = new ArrayList<Float>();
+    public ArrayList<Float> TEMP_data = new ArrayList<Float>();
 
     private BluetoothDialog mBluetoothDialog;    //used to show dialogs to chose the device
     private ManagerDevice mManagerDevice;        //used to manager informations from framework
@@ -84,16 +85,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         v = findViewById(R.id.emotion_sad);
         if (v != null)
             v.setOnTouchListener(this);
-
-//        Button playButton = (Button) this.findViewById(R.id.emotion_happy);
-//        playButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_MIDI)) {
-//                    // do MIDI stuff
-//                }
-//            }
-//        });
     }
 
     @Override
@@ -123,7 +114,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             player.stop();
     }
 
-
     @Override
     protected void onDestroy() {
 
@@ -147,7 +137,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         super.onDestroy();
     }
-
 
     /**
      * Return it self.
@@ -199,6 +188,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // enable Bluetooth first and show list of devices paired
                 mBluetoothDialog.showEnableBTDialog();
             }
+        } else if (id == R.id.reset_stats) {
+            clearTextView();
         }
 
         return super.onOptionsItemSelected(item);
@@ -212,8 +203,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         clearTextView();
         mManagerDevice.connectDevice(device);
     }
-
-
 
     @Override
     public void onClick(View v)
@@ -304,22 +293,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * Update the UI
      */
     private void updateUI() {
-        //add data to the array lists
-        SC_data.add(mData[Data.TYPE_SC]);
-        TEMP_data.add(mData[Data.TYPE_TEMP]);
-        HR_data.add(mData[Data.TYPE_HR]);
-        BVP_data.add(mData[Data.TYPE_BVP]);
 
-        //remove data once arraylist has more than 50 elements
-        //this keeps the size of the window limited to 50 elements
-        if (SC_data.size() > 50 ){
-            SC_data.remove(0);
-            TEMP_data.remove(0);
-            HR_data.remove(0);
-            BVP_data.remove(0);
-        }
-
-        if (SC_data.size() < 25){
+        if (HR_data.size() < 10){
             ((TextView) findViewById(R.id.init_label)).setText(String.format("Initializing..."));
         } else {
             ((TextView) findViewById(R.id.init_label)).setText(String.format(""));
@@ -350,45 +325,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    //vibrate phone according to BVP signal
-    private void playBVP() {
-        Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        int i = 0;
-        int samp_size = 25;
-        boolean ascending;
-
-        if (BVP_data.size() > samp_size) {
-            if ( BVP_data.get(i) < BVP_data.get(i+1) ) {
-                ascending = true;
-            }  else {
-                ascending = false;
+    //play beat according to BVP signal
+    private void playBeat() {
+        if (HR_data.size() > 10){
+            float hr = mData[Data.TYPE_HR];
+            long drum_freq = 0;
+            long drum_duration = 100;
+            if (hr != 0) {
+                drum_freq = (long) 60000.0 / (long) hr;
             }
-
-            while (ascending) {
-                while (BVP_data.get(i) < BVP_data.get(i+1)){
-                    i += 1;
-                    if (i == samp_size - 1) {
-                        i = i - samp_size;
-                    }
-                }
-                vibrator.vibrate(100);
-                ascending = false;
-            }
-
-            while (!ascending) {
-                while (BVP_data.get(i) > BVP_data.get(i+1)){
-                    i += 1;
-                    if (i == samp_size - 1) {
-                        i = i - samp_size;
-                    }
-                }
-                ascending = true;
-            }
-
+            sendMidi(0x90, 55, 127);
+            try {sleep(drum_duration);} catch (Exception e) {e.printStackTrace();}
+            sendMidi(0x80, 55, 0);
+            try {sleep(drum_freq);} catch (Exception e) {e.printStackTrace();}
         }
-
     }
-
 
     /**
      * Reset all TextView.
@@ -397,6 +348,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ((TextView) findViewById(R.id.skin_conductance_value)).setText("_ _");
         ((TextView) findViewById(R.id.temperature_value)).setText("_ _");
         ((TextView) findViewById(R.id.heart_rate_value)).setText("_ _");
+        ((TextView) findViewById(R.id.init_label)).setText(String.format(""));
+
     }
 
     ///// TIMER TO UPDATE UI FROM DEVICE'S VALUES /////
@@ -439,7 +392,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void run() {
             try {
-                playBVP();
+                playBeat();
                 //playHR();
             } finally {
                 // 100% guarantee that this always happens, even if
@@ -462,7 +415,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onMidiStart()
     {
         // Program change - harpsicord
-
         sendMidi(0xc0, 6);
 
     }

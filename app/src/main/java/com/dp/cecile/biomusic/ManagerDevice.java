@@ -126,13 +126,15 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 	 * Here we have all current data fired by the device.
 	 */
 	private void registerTpsDataListener() {
-		
 
 		 mDeviceService.addListener(new HeartRateListener() {
 			@Override
 			public void onHeartRate(float hr) {
 				//receive HeartRate data
 				mActivity.mData[Data.TYPE_HR] = hr;
+                mActivity.HR_data.add(hr);
+                if (mActivity.HR_data.size() > 100000 )
+                    mActivity.HR_data.remove(0);
 			}
 		});
 		
@@ -141,6 +143,9 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 			public void onSkinConductance(float sc) {
 				//receive SkinConductance data
 				mActivity.mData[Data.TYPE_SC] = sc;
+                mActivity.SC_data.add(sc);
+                if (mActivity.SC_data.size() > 100000 )
+                    mActivity.SC_data.remove(0);
 			}
 		});
 		
@@ -157,6 +162,9 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 			public void onTemperature(float temp) {
 				//receive Temperature data
 				mActivity.mData[Data.TYPE_TEMP] = temp;
+                mActivity.TEMP_data.add(temp);
+                if (mActivity.TEMP_data.size() > 100000 )
+                    mActivity.TEMP_data.remove(0);
 			}
 		});
 		
@@ -165,6 +173,9 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 			public void onBvp(float bvp) {
 				//receive Blood Volume Pulse data
 				mActivity.mData[Data.TYPE_BVP] = bvp;
+                mActivity.BVP_data.add(bvp);
+                if (mActivity.BVP_data.size() > 100000 )
+                    mActivity.BVP_data.remove(0);
 			}
 		});
 		
