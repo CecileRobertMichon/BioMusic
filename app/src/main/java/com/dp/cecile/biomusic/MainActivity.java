@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.view.MotionEvent;
+import org.billthefarmer.mididriver.MidiDriver;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -95,6 +96,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        });
     }
 
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+
+        // Start midi
+
+        if (midi != null)
+            midi.start();
+    }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+
+        // Stop midi
+
+        if (midi != null)
+            midi.stop();
+
+        // Stop player
+
+        if (player != null)
+            player.stop();
+    }
+
 
     @Override
     protected void onDestroy() {
@@ -171,11 +199,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // enable Bluetooth first and show list of devices paired
                 mBluetoothDialog.showEnableBTDialog();
             }
-        } else if (id == R.id.start_midi){
-            if (midi != null)
-                midi.start();
         }
-
 
         return super.onOptionsItemSelected(item);
     }

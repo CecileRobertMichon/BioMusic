@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/BioMusic.iml" filepath="$PROJECT_DIR$/BioMusic.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MidiDriver/MidiDriver.iml" filepath="$PROJECT_DIR$/MidiDriver/MidiDriver.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
