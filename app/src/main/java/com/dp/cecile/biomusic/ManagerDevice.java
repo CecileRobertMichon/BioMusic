@@ -133,7 +133,7 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 				//receive HeartRate data
 				mActivity.mData[Data.TYPE_HR] = hr;
                 mActivity.HR_data.add(hr);
-                if (mActivity.HR_data.size() > 100000 )
+                if (mActivity.HR_data.size() > 20 )
                     mActivity.HR_data.remove(0);
 			}
 		});

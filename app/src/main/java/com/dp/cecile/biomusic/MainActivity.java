@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ManagerDevice mManagerDevice;        //used to manager informations from framework
     protected MidiDriver midi;
     protected MediaPlayer player;
+    public int oldNote1 = 60, oldNote2 = 64, oldNote3 = 67; //middle C
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -243,15 +244,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 switch (id)
                 {
                     case R.id.emotion_neutral:
-                        sendMidi(0x90, 48, 63);
-                        sendMidi(0x90, 52, 63);
-                        sendMidi(0x90, 55, 63);
+                        sendMidi(0x90, 45, 127);
                         break;
 
                     case R.id.emotion_sad:
-                        sendMidi(0x90, 55, 63);
-                        sendMidi(0x90, 59, 63);
-                        sendMidi(0x90, 62, 63);
+                        sendMidi(0x91, 50, 63);
                         break;
 
                     default:
@@ -265,15 +262,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 switch (id)
                 {
                     case R.id.emotion_neutral:
-                        sendMidi(0x80, 48, 0);
-                        sendMidi(0x80, 52, 0);
-                        sendMidi(0x80, 55, 0);
+                        sendMidi(0x80, 45, 0);
                         break;
 
                     case R.id.emotion_sad:
-                        sendMidi(0x80, 55, 0);
-                        sendMidi(0x80, 59, 0);
-                        sendMidi(0x80, 62, 0);
+                        sendMidi(0x81, 50, 0);
                         break;
 
                     default:
@@ -303,11 +296,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ((TextView) findViewById(R.id.skin_conductance_value)).setText(String.format("%.2f", mData[Data.TYPE_SC]));
         ((TextView) findViewById(R.id.temperature_value)).setText(String.format("%.2f", mData[Data.TYPE_TEMP]));
         ((TextView) findViewById(R.id.heart_rate_value)).setText(String.format("%.2f", mData[Data.TYPE_HR]));
-        //((TextView) findViewById(R.id.heart_rate_value)).setText(String.format("%d", BVP_data.size()));
+        //((TextView) findViewById(R.id.heart_rate_value)).setText(String.format("%d", SC_data.size()));
 
     }
 
-    // play heart rate sound
+    // vibrate according to heart rat
     private void playHR() {
         float hr = mData[Data.TYPE_HR];
         long interval = 0;
@@ -325,20 +318,75 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    //play beat according to BVP signal
+    //initialize music maker in middle C
+    private void initMusic() {
+        sendMidi(0x91, oldNote1, 60);
+        sendMidi(0x91, oldNote2, 60);
+        sendMidi(0x91, oldNote3, 60);
+    }
+
+    //play beat according to HR signal
     private void playBeat() {
-        if (HR_data.size() > 10){
-            float hr = mData[Data.TYPE_HR];
+        if (HR_data.size() > 10) {
+            float hr = HR_data.get(0);
             long drum_freq = 0;
-            long drum_duration = 100;
+            long drum_duration = 50;
             if (hr != 0) {
-                drum_freq = (long) 60000.0 / (long) hr;
+                drum_freq = 4000000 / ((long) hr * (long) hr);
             }
-            sendMidi(0x90, 55, 127);
-            try {sleep(drum_duration);} catch (Exception e) {e.printStackTrace();}
-            sendMidi(0x80, 55, 0);
-            try {sleep(drum_freq);} catch (Exception e) {e.printStackTrace();}
+            sendMidi(0x90, 45, 127);
+            try {
+                sleep(drum_duration);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            sendMidi(0x80, 45, 0);
+            try {
+                sleep(drum_freq);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
+    }
+
+    //play melody according to EDA signal
+    private void playMelody() {
+        if ( SC_data.size() > 200 ) {
+            float eda_old = SC_data.get(0);
+            float eda_new = SC_data.get(100);
+            float m = 0.001f;
+            if ((eda_new - eda_old) / 100 > m) {
+                sendMidi(0x81, oldNote1, 0);
+                sendMidi(0x81, oldNote2, 0);
+                sendMidi(0x81, oldNote3, 0);
+                sendMidi(0x91, oldNote1 + 2, 60);
+                sendMidi(0x91, oldNote2 + 2, 60);
+                sendMidi(0x91, oldNote3 + 2, 60);
+                oldNote1 = oldNote1 + 2;
+                oldNote2 = oldNote2 + 2;
+                oldNote3 = oldNote3 + 2;
+            } else if ((eda_new - eda_old) / 100 < -m) {
+                sendMidi(0x81, oldNote1, 0);
+                sendMidi(0x81, oldNote2, 0);
+                sendMidi(0x81, oldNote3, 0);
+                sendMidi(0x91, oldNote1 - 2, 60);
+                sendMidi(0x91, oldNote2 - 2, 60);
+                sendMidi(0x91, oldNote3 - 2, 60);
+                oldNote1 = oldNote1 - 2;
+                oldNote2 = oldNote2 - 2;
+                oldNote3 = oldNote3 - 2;
+            } else {
+                sendMidi(0x91, oldNote1, 60);
+                sendMidi(0x91, oldNote2, 60);
+                sendMidi(0x91, oldNote3, 60);
+            }
+        }
+
+    }
+
+    //play harmony according to temp signal
+    private void playHarmony() {
+
     }
 
     /**
@@ -393,7 +441,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void run() {
             try {
                 playBeat();
-                //playHR();
+                playMelody();
             } finally {
                 // 100% guarantee that this always happens, even if
                 // your update method throws an exception
@@ -402,11 +450,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     };
 
-    public void startMusic() { mMusic.run(); }
-
-    public void stopMusic() {
-        mHandler.removeCallbacks(mMusic);
+    public void startMusic() {
+        //initMusic();
+        mMusic.run();
     }
+
+    public void stopMusic() { mHandler.removeCallbacks(mMusic); }
 
     // Listener for sending initial midi messages when the Sonivox
     // synthesizer has been started, such as program change.
@@ -414,8 +463,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onMidiStart()
     {
-        // Program change - harpsicord
-        sendMidi(0xc0, 6);
+        // Channel 0 - BVP - drums
+        sendMidi(0xc0, 115);
+
+        //Channel 1 - EDA -  electric piano
+        sendMidi(0xc1, 5);
+
+        //Channel 2 - Temp - electric piano
+        sendMidi(0xc2, 5);
+
+        //sustain pedal: ON
+        sendMidi(0xb0, 64, 64);
+        sendMidi(0xb1, 64, 64);
+        sendMidi(0xb2, 64, 64);
 
     }
 
