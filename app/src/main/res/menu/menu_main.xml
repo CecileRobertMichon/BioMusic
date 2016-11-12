@@ -13,8 +13,8 @@
         android:title="@string/disconnect_device"
         app:showAsAction="never" />
     <item
-        android:title="@string/reset_stats"
+        android:title="@string/save_signals"
         android:orderInCategory="101"
-        android:id="@+id/reset_stats"
+        android:id="@+id/save_signals"
         android:showAsAction="never" />
 </menu>

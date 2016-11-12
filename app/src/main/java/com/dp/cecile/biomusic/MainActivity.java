@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     private BluetoothDialog mBluetoothDialog;    //used to show dialogs to chose the device
     private ManagerDevice mManagerDevice;        //used to manager informations from framework
+    private FileManager mFileManager;
     private MidiDriver midi;
     private MusicMaker mMusicMaker;
 
@@ -55,6 +56,9 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
         //create bluetooth dialog service
         mBluetoothDialog = new BluetoothDialog(this, mManagerDevice.getDeviceService());
+
+        //create file manager
+        mFileManager = new FileManager(this);
 
         // Create midi driver
         midi = new MidiDriver();
@@ -167,7 +171,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 // enable Bluetooth first and show list of devices paired
                 mBluetoothDialog.showEnableBTDialog();
             }
-        } else if (id == R.id.reset_stats) {
+        } else if (id == R.id.save_signals) {
+            mFileManager.showConnectToDrive();
             clearTextView();
         }
 
