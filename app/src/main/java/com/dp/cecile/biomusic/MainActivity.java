@@ -1,30 +1,21 @@
 package com.dp.cecile.biomusic;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.view.MotionEvent;
+
 import org.billthefarmer.mididriver.MidiDriver;
 
-import java.io.FileOutputStream;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.ArrayList;
-
-import static java.lang.Thread.sleep;
 
 public class MainActivity extends AppCompatActivity implements View.OnTouchListener, MidiDriver.OnMidiStartListener {
 
