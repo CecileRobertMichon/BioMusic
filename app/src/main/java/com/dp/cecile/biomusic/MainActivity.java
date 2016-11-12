@@ -26,23 +26,18 @@ import java.util.ArrayList;
 
 import static java.lang.Thread.sleep;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, View.OnTouchListener, MidiDriver.OnMidiStartListener {
+public class MainActivity extends AppCompatActivity implements View.OnTouchListener, MidiDriver.OnMidiStartListener {
 
     private Timer mTimer;            //used to update UI
     private TimerTask mTimerTask;    //used to update UI
     private Handler mHandler;
 
     public float[] mData;            //used to keep/update data from device's channels
-    public ArrayList<Float> HR_data = new ArrayList<Float>();
-    public ArrayList<Float> BVP_data = new ArrayList<Float>();
-    public ArrayList<Float> SC_data = new ArrayList<Float>();
-    public ArrayList<Float> TEMP_data = new ArrayList<Float>();
 
     private BluetoothDialog mBluetoothDialog;    //used to show dialogs to chose the device
     private ManagerDevice mManagerDevice;        //used to manager informations from framework
-    protected MidiDriver midi;
-    protected MediaPlayer player;
-    public int oldNote1 = 60, oldNote2 = 64, oldNote3 = 67; //middle C
+    private MidiDriver midi;
+    private MusicMaker mMusicMaker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,22 +59,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Create midi driver
         midi = new MidiDriver();
 
+        // Create music maker
+        mMusicMaker = new MusicMaker(this);
+
         // Set on midi start listener
         if (midi != null)
             midi.setOnMidiStartListener(this);
 
-        //Set on click listener
-        View v = findViewById(R.id.emotion_happy);
-        if (v != null)
-            Log.d("clicked", "on click listener happy");
-            v.setOnClickListener(this);
-
-        v = findViewById(R.id.emotion_angry);
-        if (v != null)
-            v.setOnClickListener(this);
-
         //Set on touch listener
-        v = findViewById(R.id.emotion_neutral);
+        View v = findViewById(R.id.emotion_neutral);
         if (v != null)
             v.setOnTouchListener(this);
 
@@ -108,11 +96,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (midi != null)
             midi.stop();
-
-        // Stop player
-
-        if (player != null)
-            player.stop();
     }
 
     @Override
@@ -124,10 +107,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Stop midi
         if (midi != null)
             midi.stop();
-
-        // Stop player
-        if (player != null)
-            player.stop();
 
         // stop music
         stopMusic();
@@ -148,11 +127,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return this;
     }
 
-    /**
-     * Show Toast message to UI
-     *
-     * @param message
-     */
+
+    public MusicMaker getMusicMaker() {
+        return mMusicMaker;
+    }
 
     public void toastMessage(final String message) {
         runOnUiThread(new Runnable() {
@@ -203,33 +181,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         clearTextView();
         mManagerDevice.connectDevice(device);
-    }
-
-    @Override
-    public void onClick(View v)
-    {
-        int id = v.getId();
-
-        switch (id)
-        {
-            case R.id.emotion_happy:
-                Log.d("clicked", "happy click");
-                if (player != null) {
-                    player.stop();
-                }
-                break;
-
-            case R.id.emotion_angry:
-                Log.d("clicked", "angry click");
-                if (player != null)
-                {
-                    player.stop();
-                    player.release();
-                }
-                player = MediaPlayer.create(this, R.raw.ants);
-                player.start();
-                break;
-        }
     }
 
     @Override
@@ -287,7 +238,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     private void updateUI() {
 
-        if (HR_data.size() < 10){
+        if (mMusicMaker.getHR_data().size() < 10){
             ((TextView) findViewById(R.id.init_label)).setText(String.format("Initializing..."));
         } else {
             ((TextView) findViewById(R.id.init_label)).setText(String.format(""));
@@ -301,93 +252,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     // vibrate according to heart rat
-    private void playHR() {
-        float hr = mData[Data.TYPE_HR];
-        long interval = 0;
-        if (hr != 0) {
-            interval = (long) 60000.0 / (long) hr;
-        }
-        Log.d("Music","interval is : " + interval);
-        try {
-            sleep(interval);
-            Log.d("Music", "Play sound");
-            Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-            vibrator.vibrate(100);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    //initialize music maker in middle C
-    private void initMusic() {
-        sendMidi(0x91, oldNote1, 60);
-        sendMidi(0x91, oldNote2, 60);
-        sendMidi(0x91, oldNote3, 60);
-    }
-
-    //play beat according to HR signal
-    private void playBeat() {
-        if (HR_data.size() > 10) {
-            float hr = HR_data.get(0);
-            long drum_freq = 0;
-            long drum_duration = 50;
-            if (hr != 0) {
-                drum_freq = 4000000 / ((long) hr * (long) hr);
-            }
-            sendMidi(0x90, 45, 127);
-            try {
-                sleep(drum_duration);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            sendMidi(0x80, 45, 0);
-            try {
-                sleep(drum_freq);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    //play melody according to EDA signal
-    private void playMelody() {
-        if ( SC_data.size() > 200 ) {
-            float eda_old = SC_data.get(0);
-            float eda_new = SC_data.get(100);
-            float m = 0.001f;
-            if ((eda_new - eda_old) / 100 > m) {
-                sendMidi(0x81, oldNote1, 0);
-                sendMidi(0x81, oldNote2, 0);
-                sendMidi(0x81, oldNote3, 0);
-                sendMidi(0x91, oldNote1 + 2, 60);
-                sendMidi(0x91, oldNote2 + 2, 60);
-                sendMidi(0x91, oldNote3 + 2, 60);
-                oldNote1 = oldNote1 + 2;
-                oldNote2 = oldNote2 + 2;
-                oldNote3 = oldNote3 + 2;
-            } else if ((eda_new - eda_old) / 100 < -m) {
-                sendMidi(0x81, oldNote1, 0);
-                sendMidi(0x81, oldNote2, 0);
-                sendMidi(0x81, oldNote3, 0);
-                sendMidi(0x91, oldNote1 - 2, 60);
-                sendMidi(0x91, oldNote2 - 2, 60);
-                sendMidi(0x91, oldNote3 - 2, 60);
-                oldNote1 = oldNote1 - 2;
-                oldNote2 = oldNote2 - 2;
-                oldNote3 = oldNote3 - 2;
-            } else {
-                sendMidi(0x91, oldNote1, 60);
-                sendMidi(0x91, oldNote2, 60);
-                sendMidi(0x91, oldNote3, 60);
-            }
-        }
-
-    }
-
-    //play harmony according to temp signal
-    private void playHarmony() {
-
-    }
+//    private void playHR() {
+//        float hr = mData[Data.TYPE_HR];
+//        long interval = 0;
+//        if (hr != 0) {
+//            interval = (long) 60000.0 / (long) hr;
+//        }
+//        Log.d("Music","interval is : " + interval);
+//        try {
+//            sleep(interval);
+//            Log.d("Music", "Play sound");
+//            Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+//            vibrator.vibrate(100);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     /**
      * Reset all TextView.
@@ -440,8 +320,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void run() {
             try {
-                playBeat();
-                playMelody();
+                mMusicMaker.playBeat();
+                mMusicMaker.playMelody();
             } finally {
                 // 100% guarantee that this always happens, even if
                 // your update method throws an exception
@@ -481,7 +361,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     // Send a midi message
 
-    protected void sendMidi(int m, int p)
+    public void sendMidi(int m, int p)
     {
         byte msg[] = new byte[2];
 
@@ -491,9 +371,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         midi.write(msg);
     }
 
+
     // Send a midi message
 
-    protected void sendMidi(int m, int n, int v)
+    public void sendMidi(int m, int n, int v)
     {
         byte msg[] = new byte[3];
 
@@ -503,4 +384,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         midi.write(msg);
     }
+
 }

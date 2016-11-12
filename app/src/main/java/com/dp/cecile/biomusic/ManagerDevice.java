@@ -30,11 +30,7 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 
 	private DeviceService mDeviceService;
 	private MainActivity mActivity;
-	
-	/**
-	 * Constructor 
-	 * @param Activity activity
-	 */
+
 	public ManagerDevice(MainActivity activity) {
 
 		//init Tps Service
@@ -132,9 +128,9 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 			public void onHeartRate(float hr) {
 				//receive HeartRate data
 				mActivity.mData[Data.TYPE_HR] = hr;
-                mActivity.HR_data.add(hr);
-                if (mActivity.HR_data.size() > 20 )
-                    mActivity.HR_data.remove(0);
+                mActivity.getMusicMaker().addHR_data(hr);
+                if (mActivity.getMusicMaker().getHR_data().size() > 20 )
+                    mActivity.getMusicMaker().removeFirst("hr");
 			}
 		});
 		
@@ -143,9 +139,9 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 			public void onSkinConductance(float sc) {
 				//receive SkinConductance data
 				mActivity.mData[Data.TYPE_SC] = sc;
-                mActivity.SC_data.add(sc);
-                if (mActivity.SC_data.size() > 100000 )
-                    mActivity.SC_data.remove(0);
+                mActivity.getMusicMaker().addSC_data(sc);
+                if (mActivity.getMusicMaker().getSC_data().size() > 100000 )
+                    mActivity.getMusicMaker().removeFirst("sc");
 			}
 		});
 		
@@ -162,9 +158,9 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 			public void onTemperature(float temp) {
 				//receive Temperature data
 				mActivity.mData[Data.TYPE_TEMP] = temp;
-                mActivity.TEMP_data.add(temp);
-                if (mActivity.TEMP_data.size() > 100000 )
-                    mActivity.TEMP_data.remove(0);
+                mActivity.getMusicMaker().addTEMP_data(temp);
+                if (mActivity.getMusicMaker().getTEMP_data().size() > 100000 )
+                    mActivity.getMusicMaker().removeFirst("temp");
 			}
 		});
 		
@@ -173,9 +169,9 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 			public void onBvp(float bvp) {
 				//receive Blood Volume Pulse data
 				mActivity.mData[Data.TYPE_BVP] = bvp;
-                mActivity.BVP_data.add(bvp);
-                if (mActivity.BVP_data.size() > 100000 )
-                    mActivity.BVP_data.remove(0);
+                mActivity.getMusicMaker().addBVP_data(bvp);
+                if (mActivity.getMusicMaker().getBVP_data().size() > 100000 )
+                    mActivity.getMusicMaker().removeFirst("bvp");
 			}
 		});
 		
