@@ -18,7 +18,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -63,28 +67,6 @@ public class FileManager implements ConnectionCallbacks,
 
     public void saveFileToDrive() {
 
-//
-//        PackageManager m = mActivity.getPackageManager();
-//        String s = mActivity.getPackageName();
-//        try {
-//            PackageInfo p = m.getPackageInfo(s, 0);
-//            s = p.applicationInfo.dataDir;
-//        } catch (PackageManager.NameNotFoundException e) {
-//            Log.w("yourtag", "Error Package name not found ", e);
-//        }
-//
-//        File filelocation = new File(s, "hello_file");
-//        Uri path = Uri.fromFile(filelocation);
-//
-//        Intent emailIntent = new Intent(Intent.ACTION_SEND);
-//        // The intent does not have a URI, so declare the "text/plain" MIME type
-//        emailIntent.setType("vnd.android.cursor.dir/email");
-//        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[] {"mombeys@hotmail.com"}); // recipients
-//        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Email subject");
-//        emailIntent.putExtra(Intent.EXTRA_TEXT, "Email message text");
-//        emailIntent.putExtra(Intent.EXTRA_STREAM, path);
-//        mActivity.startActivity(Intent.createChooser(emailIntent , "Send email..."));
-
         // Start by creating a new contents, and setting a callback.
         Log.i(TAG, "Creating new contents.");
         final String string = "hello world!";
@@ -102,32 +84,34 @@ public class FileManager implements ConnectionCallbacks,
                         }
                         // Otherwise, we can write our data to the new contents.
                         Log.i(TAG, "New contents created.");
-                        OutputStream fos = result.getDriveContents().getOutputStream();
                         try {
-                            fos.write(string.getBytes());
+                            OutputStream fos = result.getDriveContents().getOutputStream();
+                            ObjectOutputStream out = new ObjectOutputStream(fos);
+                            out.writeObject(mActivity.getMusicMaker().getBVP_data_string() + System.getProperty("line.separator"));
+                            out.close();
                             fos.close();
                         } catch (Exception e) {
                             Log.i(TAG, "Unable to write file contents.");
                         }
                         // Create the initial metadata - MIME type and title.
                         // Note that the user will be able to change the title later.
+                        String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
                         MetadataChangeSet metadataChangeSet = new MetadataChangeSet.Builder()
-                                .setMimeType("text/plain").setTitle("Hello.txt").build();
+                                .setMimeType("text/plain").setTitle("BVP-"+currentDateTimeString).build();
                         // Create an intent for the file chooser, and start it.
                         IntentSender intentSender = Drive.DriveApi
                                 .newCreateFileActivityBuilder()
                                 .setInitialMetadata(metadataChangeSet)
                                 .setInitialDriveContents(result.getDriveContents())
                                 .build(mGoogleApiClient);
-//                        try {
-//                            startIntentSenderForResult(
-//                                    intentSender, 2, null, 0, 0, 0);
-//                        } catch (SendIntentException e) {
-//                            Log.i(TAG, "Failed to launch file chooser.");
-//                        }
+                        try {
+                            mActivity.startIntentSenderForResult(
+                                    intentSender, 2, null, 0, 0, 0);
+                        } catch (SendIntentException e) {
+                            Log.i(TAG, "Failed to launch file chooser.");
+                        }
                     }
                 });
-
     }
 
     @Override
@@ -160,6 +144,5 @@ public class FileManager implements ConnectionCallbacks,
             Log.e(TAG, "Exception while starting resolution activity", e);
         }
     }
-
 
 }

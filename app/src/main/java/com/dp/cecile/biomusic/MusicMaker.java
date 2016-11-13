@@ -14,8 +14,11 @@ import static java.lang.Thread.sleep;
 public class MusicMaker {
 
     private ArrayList<Float> BVP_data = new ArrayList<Float>();
+    private ArrayList<String> BVP_data_string = new ArrayList<String>();
     private ArrayList<Float> SC_data = new ArrayList<Float>();
+    private ArrayList<String> SC_data_string = new ArrayList<String>();
     private ArrayList<Float> TEMP_data = new ArrayList<Float>();
+    private ArrayList<String> TEMP_data_string = new ArrayList<String>();
     private ArrayList<Float> HR_data = new ArrayList<Float>();
     private ArrayList<NoteOff> noteOffList = new ArrayList<>();
     private int oldNote1 = 60, oldNote2 = 64, oldNote3 = 67; //middle C
@@ -53,31 +56,39 @@ public class MusicMaker {
     public ArrayList<Float> getBVP_data() {
         return BVP_data;
     }
-
     public void addBVP_data(float bvp) {
         this.BVP_data.add(bvp);
     }
+    public ArrayList<String> getBVP_data_string() {
+        return BVP_data_string;
+    }
+    public void addBVP_data_string(String bvp) {this.BVP_data_string.add(bvp);}
 
     public ArrayList<Float> getSC_data() {
         return SC_data;
     }
-
     public void addSC_data(float sc) {
         this.SC_data.add(sc);
     }
+    public ArrayList<String> getSC_data_string() {
+        return SC_data_string;
+    }
+    public void addSC_data_string(String bvp) {this.SC_data_string.add(bvp);}
 
     public ArrayList<Float> getTEMP_data() {
         return TEMP_data;
     }
-
     public void addTEMP_data(float temp) {
         this.TEMP_data.add(temp);
     }
+    public ArrayList<String> getTEMP_data_string() {
+        return TEMP_data_string;
+    }
+    public void addTEMP_data_string(String bvp) {this.TEMP_data_string.add(bvp);}
 
     public ArrayList<Float> getHR_data() {
         return HR_data;
     }
-
     public void addHR_data(float hr) {
         this.HR_data.add(hr);
     }
