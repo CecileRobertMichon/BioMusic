@@ -127,8 +127,8 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 				//receive HeartRate data
 				mActivity.mData[Data.TYPE_HR] = hr;
                 mActivity.getMusicMaker().addHR_data(hr);
-                if (mActivity.getMusicMaker().getHR_data().size() > 20 )
-                    mActivity.getMusicMaker().removeFirst("hr");
+                //if (mActivity.getMusicMaker().getHR_data().size() > 20 )
+                   // mActivity.getMusicMaker().removeFirst("hr");
 			}
 		});
 		
@@ -138,8 +138,8 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 				//receive SkinConductance data
 				mActivity.mData[Data.TYPE_SC] = sc;
                 mActivity.getMusicMaker().addSC_data(sc);
-                if (mActivity.getMusicMaker().getSC_data().size() > 100000 )
-                    mActivity.getMusicMaker().removeFirst("sc");
+                //if (mActivity.getMusicMaker().getSC_data().size() > 100000 )
+                    //mActivity.getMusicMaker().removeFirst("sc");
 			}
 		});
 		
@@ -157,8 +157,8 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 				//receive Temperature data
 				mActivity.mData[Data.TYPE_TEMP] = temp;
                 mActivity.getMusicMaker().addTEMP_data(temp);
-                if (mActivity.getMusicMaker().getTEMP_data().size() > 100000 )
-                    mActivity.getMusicMaker().removeFirst("temp");
+                //if (mActivity.getMusicMaker().getTEMP_data().size() > 100000 )
+                    //mActivity.getMusicMaker().removeFirst("temp");
 			}
 		});
 		
@@ -168,8 +168,8 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 				//receive Blood Volume Pulse data
 				mActivity.mData[Data.TYPE_BVP] = bvp;
                 mActivity.getMusicMaker().addBVP_data(bvp);
-                if (mActivity.getMusicMaker().getBVP_data().size() > 100000 )
-                    mActivity.getMusicMaker().removeFirst("bvp");
+                //if (mActivity.getMusicMaker().getBVP_data().size() > 100000 )
+                    //mActivity.getMusicMaker().removeFirst("bvp");
 			}
 		});
 		

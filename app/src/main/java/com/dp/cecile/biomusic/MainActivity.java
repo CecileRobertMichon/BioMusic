@@ -11,13 +11,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import org.billthefarmer.mididriver.MidiDriver;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MainActivity extends AppCompatActivity implements View.OnTouchListener, MidiDriver.OnMidiStartListener {
+public class MainActivity extends AppCompatActivity implements View.OnTouchListener {
 
     private Timer mTimer;            //used to update UI
     private TimerTask mTimerTask;    //used to update UI
@@ -28,8 +25,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private BluetoothDialog mBluetoothDialog;    //used to show dialogs to chose the device
     private ManagerDevice mManagerDevice;        //used to manager informations from framework
     private FileManager mFileManager;
-    private MidiDriver midi;
     private MusicMaker mMusicMaker;
+    private MidiGenerator mMidiGenerator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,18 +45,14 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         //create bluetooth dialog service
         mBluetoothDialog = new BluetoothDialog(this, mManagerDevice.getDeviceService());
 
-        //create file manager
+        // create file manager
         mFileManager = new FileManager(this);
 
-        // Create midi driver
-        midi = new MidiDriver();
-
-        // Create music maker
+        // create music maker
         mMusicMaker = new MusicMaker(this);
 
-        // Set on midi start listener
-        if (midi != null)
-            midi.setOnMidiStartListener(this);
+        // create midi generator
+        mMidiGenerator = new MidiGenerator(this);
 
         //Set on touch listener
         View v = findViewById(R.id.emotion_neutral);
@@ -78,8 +71,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
         // Start midi
 
-        if (midi != null)
-            midi.start();
+        if (mMidiGenerator.getMidi() != null)
+            mMidiGenerator.startMidi();
     }
 
     @Override
@@ -89,8 +82,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
         // Stop midi
 
-        if (midi != null)
-            midi.stop();
+        if (mMidiGenerator.getMidi() != null)
+            mMidiGenerator.stopMidi();
     }
 
     @Override
@@ -100,8 +93,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         stopUpdateUIDataTimer();
 
         // Stop midi
-        if (midi != null)
-            midi.stop();
+        if (mMidiGenerator.getMidi() != null)
+            mMidiGenerator.stopMidi();
 
         // stop music
         stopMusic();
@@ -191,11 +184,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 switch (id)
                 {
                     case R.id.emotion_neutral:
-                        sendMidi(0x90, 45, 127);
+                        mMidiGenerator.sendMidi(0x90, 45, 127);
                         break;
 
                     case R.id.emotion_sad:
-                        sendMidi(0x91, 50, 63);
+                        mMidiGenerator.sendMidi(0x91, 50, 63);
                         break;
 
                     default:
@@ -209,11 +202,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 switch (id)
                 {
                     case R.id.emotion_neutral:
-                        sendMidi(0x80, 45, 0);
+                        mMidiGenerator.sendMidi(0x80, 45, 0);
                         break;
 
                     case R.id.emotion_sad:
-                        sendMidi(0x81, 50, 0);
+                        mMidiGenerator.sendMidi(0x81, 50, 0);
                         break;
 
                     default:
@@ -332,53 +325,5 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     }
 
     public void stopMusic() { mHandler.removeCallbacks(mMusic); }
-
-    // Listener for sending initial midi messages when the Sonivox
-    // synthesizer has been started, such as program change.
-
-    @Override
-    public void onMidiStart()
-    {
-        // Channel 0 - BVP - drums
-        sendMidi(0xc0, 115);
-
-        //Channel 1 - EDA -  electric piano
-        sendMidi(0xc1, 5);
-
-        //Channel 2 - Temp - electric piano
-        sendMidi(0xc2, 5);
-
-        //sustain pedal: ON
-        sendMidi(0xb0, 64, 64);
-        sendMidi(0xb1, 64, 64);
-        sendMidi(0xb2, 64, 64);
-
-    }
-
-    // Send a midi message
-
-    public void sendMidi(int m, int p)
-    {
-        byte msg[] = new byte[2];
-
-        msg[0] = (byte) m;
-        msg[1] = (byte) p;
-
-        midi.write(msg);
-    }
-
-
-    // Send a midi message
-
-    public void sendMidi(int m, int n, int v)
-    {
-        byte msg[] = new byte[3];
-
-        msg[0] = (byte) m;
-        msg[1] = (byte) n;
-        msg[2] = (byte) v;
-
-        midi.write(msg);
-    }
 
 }
