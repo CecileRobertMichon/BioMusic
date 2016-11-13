@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "32187302172",
+    "project_id": "elated-practice-149318"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:32187302172:android:6130dbb175a856a1",
+        "android_client_info": {
+          "package_name": "com.dp.cecile.biomusic"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "32187302172-los0gncme624klr9lvendsp9taei4g7q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dp.cecile.biomusic",
+            "certificate_hash": "7E5E61E79E3D5A560E0277677FD6F2E93C4AEDE2"
+          }
+        },
+        {
+          "client_id": "32187302172-auki7m1qqto3p6oq6n4sf6ar4f9dc17h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-VEZlEGH4hdKtcMlDO_BX0IiLV5WfHdY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

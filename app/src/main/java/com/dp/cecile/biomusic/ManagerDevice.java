@@ -138,6 +138,7 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 				//receive SkinConductance data
 				mActivity.mData[Data.TYPE_SC] = sc;
                 mActivity.getMusicMaker().addSC_data(sc);
+				mActivity.getMusicMaker().addSC_data_string(String.format("%.2f",sc));
                 if (mActivity.getMusicMaker().getSC_data().size() > 100000 )
                     mActivity.getMusicMaker().removeFirst("sc");
 			}
@@ -157,6 +158,7 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 				//receive Temperature data
 				mActivity.mData[Data.TYPE_TEMP] = temp;
                 mActivity.getMusicMaker().addTEMP_data(temp);
+				mActivity.getMusicMaker().addTEMP_data_string(String.format("%.2f",temp));
                 if (mActivity.getMusicMaker().getTEMP_data().size() > 100000 )
                     mActivity.getMusicMaker().removeFirst("temp");
 			}
@@ -168,6 +170,7 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 				//receive Blood Volume Pulse data
 				mActivity.mData[Data.TYPE_BVP] = bvp;
                 mActivity.getMusicMaker().addBVP_data(bvp);
+				mActivity.getMusicMaker().addBVP_data_string(String.format("%.2f",bvp));
                 if (mActivity.getMusicMaker().getBVP_data().size() > 100000 )
                     mActivity.getMusicMaker().removeFirst("bvp");
 			}
