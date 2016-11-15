@@ -305,23 +305,45 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         }
     }
 
-    Runnable mMusic = new Runnable() {
+    Thread mMusic = new Thread() {
         @Override
         public void run() {
             try {
-                mMusicMaker.playBeat();
-                mMusicMaker.playMelody();
-            } finally {
-                // 100% guarantee that this always happens, even if
-                // your update method throws an exception
-                mHandler.postDelayed(mMusic, 300);
+                while(true) {
+                    //  mMusicMaker.playBeat();
+                    // mMusicMaker.playMelody();
+                    while (mMusicMaker.getBVP_data().size() < 1000) {
+                        // wait
+                    }
+                    mMusicMaker.parseData();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     };
 
+//    Runnable mMusic = new Runnable() {
+//        @Override
+//        public void run() {
+//            try {
+//               // mMusicMaker.playBeat();
+//               // mMusicMaker.playMelody();
+//                while (mMusicMaker.getBVP_data().size() < 1000) {
+//                    // wait
+//                }
+//                mMusicMaker.parseData();
+//            } finally {
+//                // 100% guarantee that this always happens, even if
+//                // your update method throws an exception
+//                mHandler.postDelayed(mMusic, 300);
+//            }
+//        }
+//    };
+
     public void startMusic() {
         //initMusic();
-        mMusic.run();
+        mMusic.start();
     }
 
     public void stopMusic() { mHandler.removeCallbacks(mMusic); }

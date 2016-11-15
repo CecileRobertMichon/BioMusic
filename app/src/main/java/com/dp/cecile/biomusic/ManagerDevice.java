@@ -28,6 +28,8 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 
 	private DeviceService mDeviceService;
 	private MainActivity mActivity;
+	private float currentTemp;
+    private float currentEda;
 
 	public ManagerDevice(MainActivity activity) {
 
@@ -137,8 +139,9 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 			public void onSkinConductance(float sc) {
 				//receive SkinConductance data
 				mActivity.mData[Data.TYPE_SC] = sc;
-                mActivity.getMusicMaker().addSC_data(sc);
-				mActivity.getMusicMaker().addSC_data_string(String.format("%.2f",sc));
+                currentEda = sc;
+//                mActivity.getMusicMaker().addSC_data(sc);
+//				mActivity.getMusicMaker().addSC_data_string(String.format("%.2f",sc));
 //                if (mActivity.getMusicMaker().getSC_data().size() > 100000 )
 //                    mActivity.getMusicMaker().removeFirst("sc");
 			}
@@ -157,8 +160,9 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 			public void onTemperature(float temp) {
 				//receive Temperature data
 				mActivity.mData[Data.TYPE_TEMP] = temp;
-                mActivity.getMusicMaker().addTEMP_data(temp);
-				mActivity.getMusicMaker().addTEMP_data_string(String.format("%.2f",temp));
+                currentTemp = temp;
+                //mActivity.getMusicMaker().addTEMP_data(temp);
+				//mActivity.getMusicMaker().addTEMP_data_string(String.format("%.2f",temp));
 //                if (mActivity.getMusicMaker().getTEMP_data().size() > 100000 )
 //                    mActivity.getMusicMaker().removeFirst("temp");
 			}
@@ -171,6 +175,12 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 				mActivity.mData[Data.TYPE_BVP] = bvp;
                 mActivity.getMusicMaker().addBVP_data(bvp);
 				mActivity.getMusicMaker().addBVP_data_string(String.format("%.2f",bvp));
+                // add temp
+                mActivity.getMusicMaker().addTEMP_data(currentTemp);
+                mActivity.getMusicMaker().addTEMP_data_string(String.format("%.2f",currentTemp));
+                // add eda
+                mActivity.getMusicMaker().addSC_data(currentEda);
+				mActivity.getMusicMaker().addSC_data_string(String.format("%.2f",currentEda));
 //                if (mActivity.getMusicMaker().getBVP_data().size() > 100000 )
 //                    mActivity.getMusicMaker().removeFirst("bvp");
 			}
