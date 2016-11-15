@@ -28,7 +28,8 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait">
             <!--<meta-data android:name="com.google.android.apps.drive.APP_ID" android:value="id=32187302172-los0gncme624klr9lvendsp9taei4g7q.apps.googleusercontent.com" />-->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

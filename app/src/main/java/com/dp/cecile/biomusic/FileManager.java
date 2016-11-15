@@ -1,28 +1,16 @@
 package com.dp.cecile.biomusic;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.util.Log;
 import android.content.IntentSender;
 import android.content.IntentSender.SendIntentException;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.util.Log;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.ArrayList;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -34,9 +22,7 @@ import com.google.android.gms.drive.Drive;
 import com.google.android.gms.drive.DriveApi.DriveContentsResult;
 import com.google.android.gms.drive.MetadataChangeSet;
 
-
-public class FileManager implements ConnectionCallbacks,
-        OnConnectionFailedListener {
+public class FileManager implements ConnectionCallbacks, OnConnectionFailedListener {
 
     private MainActivity mActivity;
     private GoogleApiClient mGoogleApiClient;
@@ -69,49 +55,71 @@ public class FileManager implements ConnectionCallbacks,
 
         // Start by creating a new contents, and setting a callback.
         Log.i(TAG, "Creating new contents.");
-        final String string = "hello world!";
-        Drive.DriveApi.newDriveContents(mGoogleApiClient)
-                .setResultCallback(new ResultCallback<DriveContentsResult>() {
+        Drive.DriveApi.newDriveContents(mGoogleApiClient).setResultCallback(new ResultCallback<DriveContentsResult>() {
+            @Override
+            public void onResult(DriveContentsResult result) {
+                // If the operation was not successful, we cannot do anything
+                // and must
+                // fail.
+                if (!result.getStatus().isSuccess()) {
+                    Log.i(TAG, "Failed to create new contents.");
+                    return;
+                }
 
-                    @Override
-                    public void onResult(DriveContentsResult result) {
-                        // If the operation was not successful, we cannot do anything
-                        // and must
-                        // fail.
-                        if (!result.getStatus().isSuccess()) {
-                            Log.i(TAG, "Failed to create new contents.");
-                            return;
-                        }
-                        // Otherwise, we can write our data to the new contents.
-                        Log.i(TAG, "New contents created.");
-                        try {
-                            OutputStream fos = result.getDriveContents().getOutputStream();
-                            ObjectOutputStream out = new ObjectOutputStream(fos);
-                            out.writeObject(mActivity.getMusicMaker().getBVP_data_string() + System.getProperty("line.separator"));
-                            out.close();
-                            fos.close();
-                        } catch (Exception e) {
-                            Log.i(TAG, "Unable to write file contents.");
-                        }
-                        // Create the initial metadata - MIME type and title.
-                        // Note that the user will be able to change the title later.
-                        String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
-                        MetadataChangeSet metadataChangeSet = new MetadataChangeSet.Builder()
-                                .setMimeType("text/plain").setTitle("BVP-"+currentDateTimeString).build();
-                        // Create an intent for the file chooser, and start it.
-                        IntentSender intentSender = Drive.DriveApi
-                                .newCreateFileActivityBuilder()
-                                .setInitialMetadata(metadataChangeSet)
-                                .setInitialDriveContents(result.getDriveContents())
-                                .build(mGoogleApiClient);
-                        try {
-                            mActivity.startIntentSenderForResult(
-                                    intentSender, 2, null, 0, 0, 0);
-                        } catch (SendIntentException e) {
-                            Log.i(TAG, "Failed to launch file chooser.");
+                // Otherwise, we can write our data to the new contents.
+                OutputStream fos = result.getDriveContents().getOutputStream();
+                OutputStreamWriter out = new OutputStreamWriter(fos);
+                try {
+                    String timeStampStart = DateFormat.getDateTimeInstance().format(new Date());
+                    out.write("DATA COLLECTION START: " + timeStampStart);
+                    out.write(System.getProperty("line.separator"));
+                    out.write(System.getProperty("line.separator"));
+                    out.write("BVP   SC   Temp");
+                    out.write(System.getProperty("line.separator"));
+                    int sizeBVP = mActivity.getMusicMaker().getBVP_data_string().size();
+                    int sizeSC = mActivity.getMusicMaker().getSC_data_string().size();
+                    for (int i=0; i<sizeBVP; i++){
+                        if (i < sizeSC){
+                            out.write(mActivity.getMusicMaker().getBVP_data_string().get(i) + "   "
+                                    + mActivity.getMusicMaker().getSC_data_string().get(i) + "   "
+                                    + mActivity.getMusicMaker().getTEMP_data_string().get(i));
+                            out.write(System.getProperty("line.separator"));
+                        } else {
+                            out.write(mActivity.getMusicMaker().getBVP_data_string().get(i));
+                            out.write(System.getProperty("line.separator"));
                         }
                     }
-                });
+                    out.write(System.getProperty("line.separator"));
+                    String timeStampStop = DateFormat.getDateTimeInstance().format(new Date());
+                    out.write("DATA COLLECTION STOP: " + timeStampStop);
+                    out.close();
+                    fos.close();
+                } catch (Exception e) {
+                    Log.i(TAG, "Unable to write file contents.");
+                }
+                Log.i(TAG, "New contents created.");
+
+
+                // Create the initial metadata - MIME type and title.
+                // Note that the user will be able to change the title later.
+                String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
+                MetadataChangeSet metadataChangeSet = new MetadataChangeSet.Builder()
+                        .setMimeType("text/plain").setTitle(currentDateTimeString).build();
+
+                // Create an intent for the file chooser, and start it.
+                IntentSender intentSender = Drive.DriveApi
+                        .newCreateFileActivityBuilder()
+                        .setInitialMetadata(metadataChangeSet)
+                        .setInitialDriveContents(result.getDriveContents())
+                        .build(mGoogleApiClient);
+                try {
+                    mActivity.startIntentSenderForResult(
+                            intentSender, 2, null, 0, 0, 0);
+                } catch (SendIntentException e) {
+                            Log.i(TAG, "Failed to launch file chooser.");
+                }
+            }
+        });
     }
 
     @Override

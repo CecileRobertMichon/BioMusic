@@ -62,6 +62,7 @@ public class MidiGenerator implements MidiDriver.OnMidiStartListener {
 
     }
 
+    // TODO: change 0x90 to 0x80??
     public void noteOff(int ch, int kk)
     {
         sendMidi(0x90 + ch, kk, 0x0);
