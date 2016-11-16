@@ -70,8 +70,7 @@ public class FileManager implements ConnectionCallbacks, OnConnectionFailedListe
                 OutputStream fos = result.getDriveContents().getOutputStream();
                 OutputStreamWriter out = new OutputStreamWriter(fos);
                 try {
-                    String timeStampStart = DateFormat.getDateTimeInstance().format(new Date());
-                    out.write("DATA COLLECTION START: " + timeStampStart);
+                    out.write("DATA COLLECTION START: " + mActivity.startTime);
                     out.write(System.getProperty("line.separator"));
                     out.write(System.getProperty("line.separator"));
                     out.write("BVP   SC   Temp");
@@ -90,8 +89,7 @@ public class FileManager implements ConnectionCallbacks, OnConnectionFailedListe
                         }
                     }
                     out.write(System.getProperty("line.separator"));
-                    String timeStampStop = DateFormat.getDateTimeInstance().format(new Date());
-                    out.write("DATA COLLECTION STOP: " + timeStampStop);
+                    out.write("DATA COLLECTION STOP: " + mActivity.stopTime);
                     out.close();
                     fos.close();
                 } catch (Exception e) {

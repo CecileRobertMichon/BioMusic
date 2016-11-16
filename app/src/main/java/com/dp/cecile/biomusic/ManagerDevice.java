@@ -12,6 +12,9 @@ import com.thoughttechnology.api.service.DeviceService;
 import com.thoughttechnology.api.utils.Constants.DeviceStatus;
 import com.thoughttechnology.api.utils.Constants.DeviceType;
 
+import java.text.DateFormat;
+import java.util.Date;
+
 
 /**
  * This class is a bridge between UI and Framework. 
@@ -73,6 +76,7 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 		
 		case CONNECT_SUCCESS:
 			registerTpsDataListener();			//register listeners
+			mActivity.startTime = DateFormat.getDateTimeInstance().format(new Date());
 			mActivity.startUpdateUIDataTimer();	//start timer to update UI
 			mActivity.startMusic();
 			mActivity.toastMessage("Connected successfully!");
@@ -83,6 +87,7 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 			break;
 		
 		case DISCONNECTED:
+			mActivity.stopTime = DateFormat.getDateTimeInstance().format(new Date());
 			mActivity.stopUpdateUIDataTimer();
 			mActivity.stopMusic();
 			mActivity.toastMessage("Disconnected.");

@@ -28,6 +28,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     private MusicMaker mMusicMaker;
     private MidiGenerator mMidiGenerator;
 
+    // get start time when connection is made and stop time when connection is stopped
+    // this is for time stamping the text file
+    public String startTime;
+    public String stopTime;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
