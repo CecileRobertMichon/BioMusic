@@ -3,6 +3,7 @@ package com.dp.cecile.biomusic;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.concurrent.locks.Lock;
 
 import static java.lang.Math.abs;
 import static java.lang.Thread.sleep;
@@ -53,9 +54,8 @@ public class MusicMaker {
 
     }
 
-    public ArrayList<Float> getBVP_data() {
-        return BVP_data;
-    }
+    // BVP
+    public ArrayList<Float> getBVP_data() { return BVP_data;}
     public void addBVP_data(float bvp) {
         this.BVP_data.add(bvp);
     }
@@ -64,6 +64,40 @@ public class MusicMaker {
     }
     public void addBVP_data_string(String bvp) {this.BVP_data_string.add(bvp);}
 
+    public float getBVP(int index) {
+        if(index < BVP_data.size()) return BVP_data.get(index);
+
+        // Execution reaches this point if we do not *yet* have enough data for the request. So we wait.
+        while(index >= BVP_data.size())
+        {
+            // wait for data
+        }
+        return BVP_data.get(index);
+    }
+
+    public float getSC(int index) {
+        if(index < SC_data.size()) return SC_data.get(index);
+
+        // Execution reaches this point if we do not *yet* have enough data for the request. So we wait.
+        while(index >= SC_data.size())
+        {
+            // wait for data
+        }
+        return SC_data.get(index);
+    }
+
+    public float getTemp(int index) {
+        if(index < TEMP_data.size()) return SC_data.get(index);
+
+        // Execution reaches this point if we do not *yet* have enough data for the request. So we wait.
+        while(index >= TEMP_data.size())
+        {
+            // wait for data
+        }
+        return TEMP_data.get(index);
+    }
+
+    // Skin Conductance / EDA
     public ArrayList<Float> getSC_data() {
         return SC_data;
     }
@@ -75,6 +109,7 @@ public class MusicMaker {
     }
     public void addSC_data_string(String bvp) {this.SC_data_string.add(bvp);}
 
+    // Temperature
     public ArrayList<Float> getTEMP_data() {
         return TEMP_data;
     }
@@ -162,7 +197,7 @@ public class MusicMaker {
         for(i = beginning_num; i < num_samples; ++i)
         {
             // Make sure that we're ready to generate a new note before we terminate notes that end at this point.
-            this.getSC_data().get(i);
+            this.getSC(i);
 
             if(i == beginning_num)
             {
@@ -184,7 +219,7 @@ public class MusicMaker {
                 }
 
                 // Based on our current offset, get the note that corresponds to this EDA
-                int note = getNoteFromEDA(this.SC_data.get(i));
+                int note = getNoteFromEDA(getSC(i));
 
                 // note_extended indicates that the same note was played twice in a row -- information
                 // that can be used to make things sound more legato
@@ -231,14 +266,14 @@ public class MusicMaker {
 
         int bvp_smooth_window = 25;
         int first_peak = 0, last_peak = 0, num_peaks = 0;
-        float last_min = this.getBVP_data().get(index - 1000);
-        float last_max = this.getBVP_data().get(index - 1000) + 0.001F; // avoid division by zero!
+        float last_min = getBVP(index - 1000);
+        float last_max = getBVP(index - 1000) + 0.001F; // avoid division by zero!
         boolean descending = false;
         boolean false_peak = false;
         for(int i = 1; i < 1000; ++i) // go through the data, comparing each "smoothed" sample with the previous one
         {
-            float new_bvp = this.getBVP_data().get(index - 1000 + i);
-            float old_bvp = this.getBVP_data().get(index - 1000 + i - bvp_smooth_window);
+            float new_bvp = getBVP(index - 1000 + i);
+            float old_bvp = getBVP(index - 1000 + i - bvp_smooth_window);
             if(new_bvp < old_bvp)
             {
                 if(!descending) // a potential peak
@@ -429,7 +464,7 @@ public class MusicMaker {
         double sum_squares = 0;
         for(int i = tempFirstPoint; i <= index; ++i)
         {
-            double diff = (this.TEMP_data.get(i) - (tempSlope * i + tempIntercept));
+            double diff = (getTemp(i) - (tempSlope * i + tempIntercept));
             sum_squares += diff * diff;
         }
         sum_squares /= (index - tempFirstPoint + 1);
@@ -462,7 +497,7 @@ public class MusicMaker {
         // Populate the above sums
         for(int i = 0; i < 5; ++i)
         {
-            float this_temp = this.TEMP_data.get(startingIndex + i);
+            float this_temp = getTemp(startingIndex + i);
             Sx += startingIndex + i;
             Sy += this_temp;
             Sxy += this_temp * (startingIndex + i);
