@@ -312,7 +312,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 while(true) {
                     //  mMusicMaker.playBeat();
                     // mMusicMaker.playMelody();
-                    while (mMusicMaker.getBVP_data().size() < 1000) {
+                    while (mMusicMaker.getBVP_data().size() < 200) {
                         // wait
                     }
                     mMusicMaker.parseData();
@@ -322,24 +322,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             }
         }
     };
-
-//    Runnable mMusic = new Runnable() {
-//        @Override
-//        public void run() {
-//            try {
-//               // mMusicMaker.playBeat();
-//               // mMusicMaker.playMelody();
-//                while (mMusicMaker.getBVP_data().size() < 1000) {
-//                    // wait
-//                }
-//                mMusicMaker.parseData();
-//            } finally {
-//                // 100% guarantee that this always happens, even if
-//                // your update method throws an exception
-//                mHandler.postDelayed(mMusic, 300);
-//            }
-//        }
-//    };
 
     public void startMusic() {
         //initMusic();

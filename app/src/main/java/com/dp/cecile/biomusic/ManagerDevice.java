@@ -140,20 +140,10 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 				//receive SkinConductance data
 				mActivity.mData[Data.TYPE_SC] = sc;
                 currentEda = sc;
-//                mActivity.getMusicMaker().addSC_data(sc);
-//				mActivity.getMusicMaker().addSC_data_string(String.format("%.2f",sc));
 //                if (mActivity.getMusicMaker().getSC_data().size() > 100000 )
 //                    mActivity.getMusicMaker().removeFirst("sc");
 			}
 		});
-		
-//		mDeviceService.addListener(new StressIndexListener() {
-//			@Override
-//			public void onStressIndex(float si) {
-//				//receive StressIndex data
-//				mActivity.mData[Data.TYPE_SI] = si;
-//			}
-//		});
 		
 		mDeviceService.addListener(new TemperatureListener() {
 			@Override
@@ -161,8 +151,6 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 				//receive Temperature data
 				mActivity.mData[Data.TYPE_TEMP] = temp;
                 currentTemp = temp;
-                //mActivity.getMusicMaker().addTEMP_data(temp);
-				//mActivity.getMusicMaker().addTEMP_data_string(String.format("%.2f",temp));
 //                if (mActivity.getMusicMaker().getTEMP_data().size() > 100000 )
 //                    mActivity.getMusicMaker().removeFirst("temp");
 			}
