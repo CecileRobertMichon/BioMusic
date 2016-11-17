@@ -18,7 +18,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
     private Timer mTimer;            //used to update UI
     private TimerTask mTimerTask;    //used to update UI
-    private Handler mHandler;
 
     public float[] mData;            //used to keep/update data from device's channels
 
@@ -42,7 +41,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         setSupportActionBar(toolbar);
 
         mData = new float[Data.ARRAY_SIZE];
-        mHandler = new Handler();
 
         //manager device
         mManagerDevice = new ManagerDevice(this);
@@ -150,8 +148,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.disconnect_device) {
-            clearTextView();
             mManagerDevice.getDeviceService().disconnect();
+            clearTextView();
         } else if (id == R.id.connect_device) {
             if (mManagerDevice.getDeviceService().isBTEnabled()) {
                 //show list of devices paired
@@ -232,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
      */
     private void updateUI() {
 
-        if (mMusicMaker.getHR_data().size() < 10){
+        if (mMusicMaker.getBVP_data().size() < 200){
             ((TextView) findViewById(R.id.init_label)).setText(String.format("Initializing..."));
         } else {
             ((TextView) findViewById(R.id.init_label)).setText(String.format(""));
@@ -314,14 +312,12 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         @Override
         public void run() {
             try {
-                //while(true) {
-                    //  mMusicMaker.playBeat();
-                    // mMusicMaker.playMelody();
                     while (mMusicMaker.getBVP_data().size() < 200) {
                         // wait
                     }
-                    mMusicMaker.parseData();
-                //}
+                    if (!isInterrupted()) {
+                        mMusicMaker.parseData();
+                    }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -329,10 +325,13 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     };
 
     public void startMusic() {
-        //initMusic();
         mMusic.start();
     }
 
-    public void stopMusic() { mHandler.removeCallbacks(mMusic); }
+    public void stopMusic() {
+        mMusic.interrupt();
+        mMusicMaker.shutDown();
+        clearTextView();
+    }
 
 }

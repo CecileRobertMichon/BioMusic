@@ -1,5 +1,6 @@
 package com.dp.cecile.biomusic;
 
+import android.util.IntProperty;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ public class MusicMaker {
     private int tempFirstPoint;
     private float tempSSThreshhold;
     private Boolean noteExtended;
+    private boolean keepPlaying;
 
     private MainActivity mActivity;
 
@@ -53,6 +55,7 @@ public class MusicMaker {
         this.tempFirstPoint = MusicConstants.INITIALIZATION_NUMBER;
         this.tempSSThreshhold = 0.002F;
         this.noteExtended = null;
+        this.keepPlaying = true;
 
     }
 
@@ -84,6 +87,11 @@ public class MusicMaker {
         while(index >= SC_data.size())
         {
             // wait for data
+            try {
+                sleep(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             // Log.d("MusicMaker", "waiting for SC... index is " + index);
         }
         return SC_data.get(index);
@@ -158,6 +166,11 @@ public class MusicMaker {
         midiGenerator.sendMidi(0x91, oldNote3, 60);
     }
 
+    public void shutDown() {
+        keepPlaying = false;
+        removeNoteOffEvents(Integer.MAX_VALUE, null, 0, 0);
+    }
+
     //play beat according to HR signal
     public void playBeat() {
         if (HR_data.size() > 10) {
@@ -197,9 +210,9 @@ public class MusicMaker {
         next_eda_note = beginning_num;
         int i;
         // Go through our samples, parsing the data we need as we go.
-        for(i = beginning_num; i < num_samples; ++i)
+        for(i = beginning_num; i < num_samples && keepPlaying; ++i)
         {
-            Log.d("MusicMaker", "parsing signal " + i);
+            Log.d("MusicMaker", "parsing signal " + i + ", size of SC is " + SC_data.size());
             // Make sure that we're ready to generate a new note before we terminate notes that end at this point.
             this.getSC(i);
 
