@@ -314,14 +314,14 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         @Override
         public void run() {
             try {
-                while(true) {
+                //while(true) {
                     //  mMusicMaker.playBeat();
                     // mMusicMaker.playMelody();
                     while (mMusicMaker.getBVP_data().size() < 200) {
                         // wait
                     }
                     mMusicMaker.parseData();
-                }
+                //}
             } catch (Exception e) {
                 e.printStackTrace();
             }

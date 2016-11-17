@@ -35,6 +35,7 @@ public class MusicMaker {
     private double tempIntercept;
     private int tempFirstPoint;
     private float tempSSThreshhold;
+    private Boolean noteExtended;
 
     private MainActivity mActivity;
 
@@ -51,6 +52,7 @@ public class MusicMaker {
         this.tempIntercept = MusicConstants.INITIALIZATION_NUMBER;
         this.tempFirstPoint = MusicConstants.INITIALIZATION_NUMBER;
         this.tempSSThreshhold = 0.002F;
+        this.noteExtended = null;
 
     }
 
@@ -82,6 +84,7 @@ public class MusicMaker {
         while(index >= SC_data.size())
         {
             // wait for data
+            // Log.d("MusicMaker", "waiting for SC... index is " + index);
         }
         return SC_data.get(index);
     }
@@ -196,6 +199,7 @@ public class MusicMaker {
         // Go through our samples, parsing the data we need as we go.
         for(i = beginning_num; i < num_samples; ++i)
         {
+            Log.d("MusicMaker", "parsing signal " + i);
             // Make sure that we're ready to generate a new note before we terminate notes that end at this point.
             this.getSC(i);
 
@@ -223,19 +227,19 @@ public class MusicMaker {
 
                 // note_extended indicates that the same note was played twice in a row -- information
                 // that can be used to make things sound more legato
-                boolean note_extended = false;
+                this.noteExtended = false;
 
-                next_pending_note_off = removeNoteOffEvents(i, note_extended, note, duration); // will set note_extended
-                if(!note_extended)
+                next_pending_note_off = removeNoteOffEvents(i, this.noteExtended, note, duration); // will set note_extended
+                if(!this.noteExtended)
                     next_pending_note_off = playNote(1, note, i, duration);
                 //}
 
                 // If we didn't simply extend the note, then play the doubling notes
-                if(!note_extended && note < MusicConstants.MIDDLE_C + MusicConstants.LOW_DOUBLING_NOTE)
+                if(!this.noteExtended && note < MusicConstants.MIDDLE_C + MusicConstants.LOW_DOUBLING_NOTE)
                 {
                     next_pending_note_off = playNote(1, note + 12, i, duration);
                 }
-                if(!note_extended && note > MusicConstants.MIDDLE_C + MusicConstants.HIGH_DOUBLING_NOTE)
+                if(!this.noteExtended && note > MusicConstants.MIDDLE_C + MusicConstants.HIGH_DOUBLING_NOTE)
                 {
                     next_pending_note_off = playNote(1, note - 12, i, duration);
                 }
@@ -580,13 +584,14 @@ public class MusicMaker {
  */
     public int removeNoteOffEvents(int current_index, Boolean kept_note, int next_note, int duration)
     {
-        if(kept_note) {
-            kept_note = false;
+        if(kept_note != null && kept_note) {
+            this.noteExtended = false;
         }
 
         int iter = 0;
-        for (NoteOff n : this.noteOffList)
+        for (iter = 0; iter < this.noteOffList.size(); iter++)
         {
+            NoteOff n = this.noteOffList.get(iter);
             if (n.when > current_index) {
                 break;
             }
@@ -601,7 +606,7 @@ public class MusicMaker {
                 NoteOff newOffEvent = n;
                 newOffEvent.when += duration;
                 addNoteOffEvent(newOffEvent); // will not change anything that we have scanned until this point
-                kept_note = true;
+                this.noteExtended = true;
             }
             else
             {
@@ -611,7 +616,7 @@ public class MusicMaker {
 
         // Now remove them
         for (int k = 0; k < iter; k++) {
-            this.noteOffList.remove(k);
+            this.noteOffList.remove(0);
 
         }
 
