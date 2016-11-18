@@ -23,7 +23,6 @@ public class MusicMaker {
     private ArrayList<String> TEMP_data_string = new ArrayList<String>();
     private ArrayList<Float> HR_data = new ArrayList<Float>();
     private ArrayList<NoteOff> noteOffList = new ArrayList<>();
-    private int oldNote1 = 60, oldNote2 = 64, oldNote3 = 67; //middle C
 
     private MidiGenerator midiGenerator;
 
@@ -36,7 +35,7 @@ public class MusicMaker {
     private double tempIntercept;
     private int tempFirstPoint;
     private float tempSSThreshhold;
-    private Boolean noteExtended;
+    private boolean noteExtended;
     private boolean keepPlaying;
 
     private MainActivity mActivity;
@@ -54,7 +53,7 @@ public class MusicMaker {
         this.tempIntercept = MusicConstants.INITIALIZATION_NUMBER;
         this.tempFirstPoint = MusicConstants.INITIALIZATION_NUMBER;
         this.tempSSThreshhold = 0.002F;
-        this.noteExtended = null;
+        this.noteExtended = false;
         this.keepPlaying = true;
 
     }
@@ -158,42 +157,22 @@ public class MusicMaker {
         }
     }
 
-
-    //initialize music maker in middle C
-    public void initMusic() {
-        midiGenerator.sendMidi(0x91, oldNote1, 60);
-        midiGenerator.sendMidi(0x91, oldNote2, 60);
-        midiGenerator.sendMidi(0x91, oldNote3, 60);
+    public void resetSignals() {
+        this.BVP_data.clear();
+        this.BVP_data_string.clear();
+        this.SC_data.clear();
+        this.SC_data_string.clear();
+        this.TEMP_data.clear();
+        this.TEMP_data_string.clear();
     }
+
+
 
     public void shutDown() {
         keepPlaying = false;
         removeNoteOffEvents(Integer.MAX_VALUE, null, 0, 0);
     }
 
-    //play beat according to HR signal
-    public void playBeat() {
-        if (HR_data.size() > 10) {
-            float hr = HR_data.get(0);
-            long drum_freq = 0;
-            long drum_duration = 50;
-            if (hr != 0) {
-                drum_freq = 4000000 / ((long) hr * (long) hr);
-            }
-            midiGenerator.sendMidi(0x90, 45, 127);
-            try {
-                sleep(drum_duration);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            midiGenerator.sendMidi(0x80, 45, 0);
-            try {
-                sleep(drum_freq);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     public void parseData()
     {
@@ -205,12 +184,12 @@ public class MusicMaker {
         // We now have data in our PhysioData collection.
         int num_samples = this.getBVP_data().size();
         int beginning_num = num_samples;
-        num_samples = beginning_num + 300 * 60 * 30;
+        num_samples = beginning_num + 300 * 60 * 30; //30 minutes hard-coded
 
         next_eda_note = beginning_num;
         int i;
         // Go through our samples, parsing the data we need as we go.
-        for(i = beginning_num; i < num_samples && keepPlaying; ++i)
+        for(i = beginning_num; (i < num_samples) && keepPlaying; ++i)
         {
             Log.d("MusicMaker", "parsing signal " + i + ", size of SC is " + SC_data.size());
             // Make sure that we're ready to generate a new note before we terminate notes that end at this point.
@@ -431,40 +410,6 @@ public class MusicMaker {
         return output_note;
     }
 
-    //play melody according to EDA signal
-    public void playMelody() {
-        if ( SC_data.size() > 200 ) {
-            float eda_old = SC_data.get(0);
-            float eda_new = SC_data.get(100);
-            float m = 0.001f;
-            if ((eda_new - eda_old) / 100 > m) {
-                midiGenerator.sendMidi(0x81, oldNote1, 0);
-                midiGenerator.sendMidi(0x81, oldNote2, 0);
-                midiGenerator.sendMidi(0x81, oldNote3, 0);
-                midiGenerator.sendMidi(0x91, oldNote1 + 2, 60);
-                midiGenerator.sendMidi(0x91, oldNote2 + 2, 60);
-                midiGenerator.sendMidi(0x91, oldNote3 + 2, 60);
-                oldNote1 = oldNote1 + 2;
-                oldNote2 = oldNote2 + 2;
-                oldNote3 = oldNote3 + 2;
-            } else if ((eda_new - eda_old) / 100 < -m) {
-                midiGenerator.sendMidi(0x81, oldNote1, 0);
-                midiGenerator.sendMidi(0x81, oldNote2, 0);
-                midiGenerator.sendMidi(0x81, oldNote3, 0);
-                midiGenerator.sendMidi(0x91, oldNote1 - 2, 60);
-                midiGenerator.sendMidi(0x91, oldNote2 - 2, 60);
-                midiGenerator.sendMidi(0x91, oldNote3 - 2, 60);
-                oldNote1 = oldNote1 - 2;
-                oldNote2 = oldNote2 - 2;
-                oldNote3 = oldNote3 - 2;
-            } else {
-                midiGenerator.sendMidi(0x91, oldNote1, 60);
-                midiGenerator.sendMidi(0x91, oldNote2, 60);
-                midiGenerator.sendMidi(0x91, oldNote3, 60);
-            }
-        }
-
-    }
 
     //play harmony according to temp signal
     public void checkTemperature(int index) {

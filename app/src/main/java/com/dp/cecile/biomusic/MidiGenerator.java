@@ -54,18 +54,11 @@ public class MidiGenerator implements MidiDriver.OnMidiStartListener {
         //Channel 2 - Temp - Choir "oohs"
         sendMidi(0xc2, this.instruments[2]);
         sendMidi(0xb0, 7, this.volumes[2]);
-
-        //sustain pedal: ON
-//        sendMidi(0xb0, 64, 64);
-//        sendMidi(0xb1, 64, 64);
-//        sendMidi(0xb2, 64, 64);
-
     }
 
-    // TODO: change 0x90 to 0x80??
     public void noteOff(int ch, int kk)
     {
-        sendMidi(0x90 + ch, kk, 0x0);
+        sendMidi(0x80 + ch, kk, 0x0);
     }
 
     void noteOn(int ch, int kk, int v)
