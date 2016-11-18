@@ -17,4 +17,9 @@
         android:orderInCategory="101"
         android:id="@+id/save_signals"
         android:showAsAction="never" />
+    <item
+        android:title="@string/reset_signals"
+        android:orderInCategory="102"
+        android:id="@+id/reset_signals"
+        android:showAsAction="never" />
 </menu>

@@ -161,6 +161,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         } else if (id == R.id.save_signals) {
             mFileManager.showConnectToDrive();
             clearTextView();
+        } else if (id == R.id.reset_signals) {
+            mMusicMaker.resetSignals();
         }
 
         return super.onOptionsItemSelected(item);
@@ -230,11 +232,11 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
      */
     private void updateUI() {
 
-        if (mMusicMaker.getBVP_data().size() < 200){
-            ((TextView) findViewById(R.id.init_label)).setText(String.format("Initializing..."));
-        } else {
-            ((TextView) findViewById(R.id.init_label)).setText(String.format(""));
-        }
+//        if (mMusicMaker.getBVP_data().size() < 200){
+//            ((TextView) findViewById(R.id.init_label)).setText(String.format("Initializing..."));
+//        } else {
+//            ((TextView) findViewById(R.id.init_label)).setText(String.format(""));
+//        }
 
         ((TextView) findViewById(R.id.skin_conductance_value)).setText(String.format("%.2f", mData[Data.TYPE_SC]));
         ((TextView) findViewById(R.id.temperature_value)).setText(String.format("%.2f", mData[Data.TYPE_TEMP]));
@@ -242,24 +244,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         //((TextView) findViewById(R.id.heart_rate_value)).setText(String.format("%d", SC_data.size()));
 
     }
-
-    // vibrate according to heart rat
-//    private void playHR() {
-//        float hr = mData[Data.TYPE_HR];
-//        long interval = 0;
-//        if (hr != 0) {
-//            interval = (long) 60000.0 / (long) hr;
-//        }
-//        Log.d("Music","interval is : " + interval);
-//        try {
-//            sleep(interval);
-//            Log.d("Music", "Play sound");
-//            Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-//            vibrator.vibrate(100);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
 
     /**
      * Reset all TextView.
