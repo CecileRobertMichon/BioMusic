@@ -170,7 +170,8 @@ public class MusicMaker {
 
     public void shutDown() {
         keepPlaying = false;
-        removeNoteOffEvents(Integer.MAX_VALUE, null, 0, 0);
+        midiGenerator.stopAllNotes();
+        //removeNoteOffEvents(Integer.MAX_VALUE, false, 0, 0);
     }
 
 
@@ -241,13 +242,13 @@ public class MusicMaker {
             // Ending notes
             else if(i >= next_pending_note_off)
             {
-                next_pending_note_off = removeNoteOffEvents(i, null, 0, 0);
+                next_pending_note_off = removeNoteOffEvents(i, false, 0, 0);
             }
         }
 
         // Stop the breathing!
         stopTempChords(i);
-        removeNoteOffEvents(Integer.MAX_VALUE, null, 0, 0);
+        removeNoteOffEvents(Integer.MAX_VALUE, false, 0, 0);
     }
 
     /**
@@ -540,9 +541,9 @@ public class MusicMaker {
  * RemoveNoteOffEvents: Go through the list of active notes (or pending notes-off, if you want to look at it that way) and remove
  * the relevant notes. If a note is repeated, leave it on for a more legato feel.
  */
-    public int removeNoteOffEvents(int current_index, Boolean kept_note, int next_note, int duration)
+    public int removeNoteOffEvents(int current_index, boolean kept_note, int next_note, int duration)
     {
-        if(kept_note != null && kept_note) {
+        if(kept_note) {
             this.noteExtended = false;
         }
 
@@ -557,7 +558,7 @@ public class MusicMaker {
             int this_channel = n.channel;
 
             if((this_channel == 1)
-                    && kept_note != null
+                    && kept_note != false
                     && n.note % 12 == next_note % 12)
             {
                 // Add a new one later

@@ -149,7 +149,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         //noinspection SimplifiableIfStatement
         if (id == R.id.disconnect_device) {
             mManagerDevice.getDeviceService().disconnect();
-            clearTextView();
         } else if (id == R.id.connect_device) {
             if (mManagerDevice.getDeviceService().isBTEnabled()) {
                 //show list of devices paired
@@ -160,7 +159,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             }
         } else if (id == R.id.save_signals) {
             mFileManager.showConnectToDrive();
-            clearTextView();
         } else if (id == R.id.reset_signals) {
             mMusicMaker.resetSignals();
         }
@@ -313,7 +311,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
     }
 
     public void stopMusic() {
-        mMusic.interrupt();
+        mMusic.interrupt(); //does this do anything?
         mMusicMaker.shutDown();
         clearTextView();
     }

@@ -49,11 +49,11 @@ public class MidiGenerator implements MidiDriver.OnMidiStartListener {
 
         //Channel 1 - EDA -  Goblins
         sendMidi(0xc1, this.instruments[1]);
-        sendMidi(0xb0, 7, this.volumes[1]);
+        sendMidi(0xb1, 7, this.volumes[1]);
 
         //Channel 2 - Temp - Choir "oohs"
         sendMidi(0xc2, this.instruments[2]);
-        sendMidi(0xb0, 7, this.volumes[2]);
+        sendMidi(0xb2, 7, this.volumes[2]);
     }
 
     public void noteOff(int ch, int kk)
@@ -81,6 +81,12 @@ public class MidiGenerator implements MidiDriver.OnMidiStartListener {
     {
         for (int i = 0; i < 16; i++)
             sendMidi(0xB0 + i, 0x79, 0);
+    }
+
+    public void stopAllNotes() {
+        sendMidi(0xb0, 123, 0);
+        sendMidi(0xb1, 123, 0);
+        sendMidi(0xb2, 123, 0);
     }
 
     // Send a midi message
