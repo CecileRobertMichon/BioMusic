@@ -2,19 +2,17 @@ package com.dp.cecile.biomusic;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MainActivity extends AppCompatActivity implements View.OnTouchListener {
+public class MainActivity extends AppCompatActivity {
 
     private Timer mTimer;            //used to update UI
     private TimerTask mTimerTask;    //used to update UI
@@ -56,15 +54,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
         // create midi generator
         mMidiGenerator = new MidiGenerator(this);
-
-        //Set on touch listener
-        View v = findViewById(R.id.emotion_neutral);
-        if (v != null)
-            v.setOnTouchListener(this);
-
-        v = findViewById(R.id.emotion_sad);
-        if (v != null)
-            v.setOnTouchListener(this);
     }
 
     @Override
@@ -175,72 +164,19 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         mManagerDevice.connectDevice(device);
     }
 
-    @Override
-    public boolean onTouch(View v, MotionEvent event){
-        int action = event.getAction();
-        int id = v.getId();
-
-        switch (action)
-        {
-            // Down
-            case MotionEvent.ACTION_DOWN:
-                switch (id)
-                {
-                    case R.id.emotion_neutral:
-                        mMidiGenerator.sendMidi(0x90, 45, 127);
-                        break;
-
-                    case R.id.emotion_sad:
-                        mMidiGenerator.sendMidi(0x91, 50, 63);
-                        break;
-
-                    default:
-                        return false;
-                }
-                break;
-
-            // Up
-
-            case MotionEvent.ACTION_UP:
-                switch (id)
-                {
-                    case R.id.emotion_neutral:
-                        mMidiGenerator.sendMidi(0x80, 45, 0);
-                        break;
-
-                    case R.id.emotion_sad:
-                        mMidiGenerator.sendMidi(0x81, 50, 0);
-                        break;
-
-                    default:
-                        return false;
-                }
-                break;
-
-            default:
-                return false;
-        }
-
-        return false;
-    }
-
-
     /**
      * Update the UI
      */
     private void updateUI() {
 
-//        if (mMusicMaker.getBVP_data().size() < 200){
-//            ((TextView) findViewById(R.id.init_label)).setText(String.format("Initializing..."));
-//        } else {
-//            ((TextView) findViewById(R.id.init_label)).setText(String.format(""));
-//        }
-
-        ((TextView) findViewById(R.id.skin_conductance_value)).setText(String.format("%.2f", mData[Data.TYPE_SC]));
-        ((TextView) findViewById(R.id.temperature_value)).setText(String.format("%.2f", mData[Data.TYPE_TEMP]));
-        ((TextView) findViewById(R.id.heart_rate_value)).setText(String.format("%.2f", mData[Data.TYPE_HR]));
-        //((TextView) findViewById(R.id.heart_rate_value)).setText(String.format("%d", SC_data.size()));
-
+        if (mMusicMaker.getBVP_data().size() < 5000){
+            ((TextView) findViewById(R.id.init_label)).setText(String.format("Initializing..."));
+        } else {
+            ((TextView) findViewById(R.id.init_label)).setText(String.format(""));
+            ((TextView) findViewById(R.id.skin_conductance_value)).setText(String.format("%.2f", mData[Data.TYPE_SC]));
+            ((TextView) findViewById(R.id.temperature_value)).setText(String.format("%.2f", mData[Data.TYPE_TEMP]));
+            ((TextView) findViewById(R.id.heart_rate_value)).setText(String.format("%.2f", mData[Data.TYPE_HR]));
+        }
     }
 
     /**
@@ -294,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         @Override
         public void run() {
             try {
-                    while (mMusicMaker.getBVP_data().size() < 200) {
+                    while (mMusicMaker.getBVP_data().size() < 5000) {
                         // wait
                     }
                     if (!isInterrupted()) {

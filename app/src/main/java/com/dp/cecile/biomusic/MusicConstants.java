@@ -17,4 +17,5 @@ public interface MusicConstants {
     public final int HIGH_NOTE_JUMP = -24;
     public final int INITIALIZATION_NUMBER = 1000000;
     public final int DEFAULT_DURATION = 5;
+    public final int WINDOW_SIZE = 256;
 }

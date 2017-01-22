@@ -33,6 +33,9 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 	private MainActivity mActivity;
 	private float currentTemp;
     private float currentEda;
+	private SmoothData bvpBuffer = new SmoothData(MusicConstants.WINDOW_SIZE);
+	private SmoothData tempBuffer = new SmoothData(MusicConstants.WINDOW_SIZE);
+	private SmoothData edaBuffer = new SmoothData(MusicConstants.WINDOW_SIZE);
 
 	public ManagerDevice(MainActivity activity) {
 
@@ -92,30 +95,6 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 			mActivity.stopMusic();
 			mActivity.toastMessage("Disconnected.");
 			break;
-		
-	/*	case BATTERY_STATE_CHANGE:
-			mActivity.showBatteryInfo(bundle.getInt(DeviceStatus.BATTERY_STATE_CHANGE.name()));
-			break;
-		
-		case MOVEMENT_START:
-			mActivity.showMovementInfo(true);
-			break;
-		
-		case MOVEMENT_STOP:
-			mActivity.showMovementInfo(false);
-			break;
-		
-		case CONTACT_OFF:
-			mActivity.showTpsContactInfo(true);
-			break;
-		
-		case CONTACT_NORMAL:
-			mActivity.showTpsContactInfo(false);			
-			break;
-		
-		case CONTACT_UNKNOWN:
-			mActivity.showTpsContactInfo(false);
-			break; */
 		default:
 			break;
 		}
@@ -134,8 +113,6 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 				//receive HeartRate data
 				mActivity.mData[Data.TYPE_HR] = hr;
                 mActivity.getMusicMaker().addHR_data(hr);
-                //if (mActivity.getMusicMaker().getHR_data().size() > 20 )
-                   // mActivity.getMusicMaker().removeFirst("hr");
 			}
 		});
 		
@@ -143,10 +120,10 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 			@Override
 			public void onSkinConductance(float sc) {
 				//receive SkinConductance data
-				mActivity.mData[Data.TYPE_SC] = sc;
-                currentEda = sc;
-//                if (mActivity.getMusicMaker().getSC_data().size() > 100000 )
-//                    mActivity.getMusicMaker().removeFirst("sc");
+                edaBuffer.add(sc);
+                float average = edaBuffer.getAverage();
+				mActivity.mData[Data.TYPE_SC] = average;
+                currentEda = average;
 			}
 		});
 		
@@ -154,10 +131,10 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 			@Override
 			public void onTemperature(float temp) {
 				//receive Temperature data
-				mActivity.mData[Data.TYPE_TEMP] = temp;
-                currentTemp = temp;
-//                if (mActivity.getMusicMaker().getTEMP_data().size() > 100000 )
-//                    mActivity.getMusicMaker().removeFirst("temp");
+                tempBuffer.add(temp);
+                float average = tempBuffer.getAverage();
+				mActivity.mData[Data.TYPE_TEMP] = average;
+                currentTemp = average;
 			}
 		});
 		
@@ -165,31 +142,19 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 			@Override
 			public void onBvp(float bvp) {
 				//receive Blood Volume Pulse data
-				mActivity.mData[Data.TYPE_BVP] = bvp;
-                mActivity.getMusicMaker().addBVP_data(bvp);
-				mActivity.getMusicMaker().addBVP_data_string(String.format("%.2f",bvp));
+                bvpBuffer.add(bvp);
+                float average = bvpBuffer.getAverage();
+				mActivity.mData[Data.TYPE_BVP] = average;
+                mActivity.getMusicMaker().addBVP_data(average);
+				mActivity.getMusicMaker().addBVP_data_string(String.format("%.2f", average));
                 // add temp
                 mActivity.getMusicMaker().addTEMP_data(currentTemp);
                 mActivity.getMusicMaker().addTEMP_data_string(String.format("%.2f",currentTemp));
                 // add eda
                 mActivity.getMusicMaker().addSC_data(currentEda);
 				mActivity.getMusicMaker().addSC_data_string(String.format("%.2f",currentEda));
-//                if (mActivity.getMusicMaker().getBVP_data().size() > 100000 )
-//                    mActivity.getMusicMaker().removeFirst("bvp");
 			}
 		});
-		
-//		mDeviceService.addListener(new HrvListener() {
-//			@Override
-//			public void onHrv(float vlf, float lf, float hf) {
-//				//receive Very Low Frequency data
-//				mActivity.mData[Data.TYPE_VLF] = vlf;
-//				//receive Low Frequency data
-//				mActivity.mData[Data.TYPE_LF]  = lf;
-//				//receive High Frequency data
-//				mActivity.mData[Data.TYPE_HF]  = hf;
-//			}
-//		});
 	}
 
 }
