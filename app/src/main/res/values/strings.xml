@@ -4,4 +4,8 @@
     <string name="disconnect_device">Disconnect from device</string>
     <string name="save_signals">Save signals</string>
     <string name="reset_signals">Reset signals</string>
+
+    <string name="title_activity_splash">SplashActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>
