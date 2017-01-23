@@ -51,143 +51,153 @@
         android:layout_alignRight="@id/heart_rate_value"
         android:text="_ _" />
 
-    <TableLayout
-        android:id="@+id/emotion_table"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:gravity="center">
+    <!--     <TableLayout
+         android:id="@+id/emotion_table"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_alignParentBottom="true"
+         android:gravity="center">
 
-        <TableRow
-            android:id="@+id/tableRow1"
-            android:layout_width="match_parent"
-            android:layout_height="fill_parent"
-            android:gravity="center">
+         <TableRow
+             android:id="@+id/tableRow1"
+             android:layout_width="match_parent"
+             android:layout_height="fill_parent"
+             android:gravity="center">
 
-            <Button
-                android:id="@+id/emotion_happy"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_marginRight="24dp"
-                android:layout_marginLeft="24dp"
-                android:background="@drawable/excited_smiley_face"
-                android:backgroundTint="@color/teal" />
+             <Button
+                 android:id="@+id/emotion_happy"
+                 android:layout_width="60dp"
+                 android:layout_height="60dp"
+                 android:layout_marginRight="24dp"
+                 android:layout_marginLeft="24dp"
+                 android:background="@drawable/excited_smiley_face"
+                 android:backgroundTint="@color/teal" />
 
-            <Button
-                android:id="@+id/emotion_neutral"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_marginLeft="24dp"
-                android:layout_marginRight="24dp"
-                android:background="@drawable/neutral_smiley_face"
-                android:backgroundTint="@color/yellow" />
+             <Button
+                 android:id="@+id/emotion_neutral"
+                 android:layout_width="60dp"
+                 android:layout_height="60dp"
+                 android:layout_marginLeft="24dp"
+                 android:layout_marginRight="24dp"
+                 android:background="@drawable/neutral_smiley_face"
+                 android:backgroundTint="@color/yellow" />
 
-            <Button
-                android:id="@+id/emotion_sad"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_marginLeft="24dp"
-                android:layout_marginRight="24dp"
-                android:background="@drawable/unhappy_face"
-                android:backgroundTint="@color/blue" />
+             <Button
+                 android:id="@+id/emotion_sad"
+                 android:layout_width="60dp"
+                 android:layout_height="60dp"
+                 android:layout_marginLeft="24dp"
+                 android:layout_marginRight="24dp"
+                 android:background="@drawable/unhappy_face"
+                 android:backgroundTint="@color/blue" />
 
-        </TableRow>
+         </TableRow>
 
-        <TableRow
-            android:id="@+id/tableRow_labels"
-            android:layout_width="match_parent"
-            android:layout_height="fill_parent"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="12dp"
-            android:gravity="center">
+     <TableRow
+             android:id="@+id/tableRow_labels"
+             android:layout_width="match_parent"
+             android:layout_height="fill_parent"
+             android:layout_marginTop="4dp"
+             android:layout_marginBottom="12dp"
+             android:gravity="center">
 
-            <TextView
-            android:id="@+id/happy_label"
-                android:layout_marginRight="24dp"
-                android:layout_marginLeft="24dp"
-                android:gravity="center"
-                android:text="Happy" />
+             <TextView
+             android:id="@+id/happy_label"
+                 android:layout_marginRight="24dp"
+                 android:layout_marginLeft="24dp"
+                 android:gravity="center"
+                 android:text="Joy" />
 
-            <TextView
-                android:id="@+id/neutral_label"
-                android:gravity="center"
-                android:layout_marginRight="24dp"
-                android:layout_marginLeft="24dp"
-                android:text="Neutral" />
+             <TextView
+                 android:id="@+id/neutral_label"
+                 android:gravity="center"
+                 android:layout_marginRight="24dp"
+                 android:layout_marginLeft="24dp"
+                 android:text="Neutral" />
 
-            <TextView
-                android:id="@+id/sad_label"
-                android:gravity="center"
-                android:layout_marginLeft="24dp"
-                android:layout_marginRight="24dp"
-                android:text="Sad" />
+             <TextView
+                 android:id="@+id/sad_label"
+                 android:gravity="center"
+                 android:layout_marginLeft="24dp"
+                 android:layout_marginRight="24dp"
+                 android:text="Sad" />
 
-            </TableRow>
+             </TableRow>
 
-        <TableRow
-            android:id="@+id/tableRow2"
-            android:layout_width="match_parent"
-            android:layout_height="fill_parent"
-            android:gravity="center">
+         <TableRow
+             android:id="@+id/tableRow2"
+             android:layout_width="match_parent"
+             android:layout_height="fill_parent"
+             android:gravity="center">
 
 
-            <Button
-                android:id="@+id/emotion_angry"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_marginRight="24dp"
-                android:layout_marginLeft="24dp"
-                android:background="@drawable/angry_smiley_face"
-                android:backgroundTint="@color/red" />
+             <Button
+                 android:id="@+id/emotion_angry"
+                 android:layout_width="60dp"
+                 android:layout_height="60dp"
+                 android:layout_marginRight="24dp"
+                 android:layout_marginLeft="24dp"
+                 android:background="@drawable/angry_smiley_face"
+                 android:backgroundTint="@color/red" />
 
-            <Button
-                android:id="@+id/emotion_confused"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_marginLeft="24dp"
-                android:layout_marginRight="24dp"
-                android:background="@drawable/unknown_smiley_face"
-                android:backgroundTint="@color/orange" />
+             <Button
+                 android:id="@+id/emotion_confused"
+                 android:layout_width="60dp"
+                 android:layout_height="60dp"
+                 android:layout_marginLeft="24dp"
+                 android:layout_marginRight="24dp"
+                 android:background="@drawable/unknown_smiley_face"
+                 android:backgroundTint="@color/orange" />
 
-        </TableRow>
+         </TableRow>
 
-        <TableRow
-            android:id="@+id/tableRow_labels_2"
-            android:layout_width="match_parent"
-            android:layout_height="fill_parent"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="8dp"
-            android:gravity="center">
+         <TableRow
+             android:id="@+id/tableRow_labels_2"
+             android:layout_width="match_parent"
+             android:layout_height="fill_parent"
+             android:layout_marginTop="4dp"
+             android:layout_marginBottom="8dp"
+             android:gravity="center">
 
-            <TextView
-                android:id="@+id/angry_label"
-                android:layout_marginRight="24dp"
-                android:layout_marginLeft="24dp"
-                android:gravity="center"
-                android:text="Angry" />
+             <TextView
+                 android:id="@+id/angry_label"
+                 android:layout_marginRight="24dp"
+                 android:layout_marginLeft="24dp"
+                 android:gravity="center"
+                 android:text="Angry" />
 
-            <TextView
-                android:id="@+id/confused_label"
-                android:gravity="center"
-                android:layout_marginLeft="24dp"
-                android:layout_marginRight="24dp"
-                android:text="Confused" />
+             <TextView
+                 android:id="@+id/confused_label"
+                 android:gravity="center"
+                 android:layout_marginLeft="24dp"
+                 android:layout_marginRight="24dp"
+                 android:text="Confused" />
 
-        </TableRow>
+     </TableLayout>  -->
 
-    </TableLayout>
+     <TextView
+    android:id="@+id/emotion_title"
+    style="@style/title"
+    android:layout_marginTop="100dp"
+    android:layout_below="@id/temperature_label"
+    android:text="Emotion detected :" />
 
     <TextView
-        android:id="@+id/emotion_title"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_centerVertical="true"
+         android:layout_centerHorizontal="true"
+         android:id="@+id/init_label" />
+
+    <TextView
+        android:id="@+id/emotion_detected"
         style="@style/title"
-        android:layout_above="@id/emotion_table"
-        android:text="I'm feeling..." />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:text="Joy"
+        android:layout_marginTop="16dp"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:id="@+id/init_label" />
+        android:layout_below="@+id/emotion_title"
+        android:visibility="invisible"
+        android:textSize="26sp" />
 
 </RelativeLayout>
