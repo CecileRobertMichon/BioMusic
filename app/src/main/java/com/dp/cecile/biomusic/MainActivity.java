@@ -1,18 +1,28 @@
 package com.dp.cecile.biomusic;
 
 import android.app.Activity;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
 
     private Timer mTimer;            //used to update UI
     private TimerTask mTimerTask;    //used to update UI
@@ -24,6 +34,10 @@ public class MainActivity extends AppCompatActivity {
     private FileManager mFileManager;
     private MusicMaker mMusicMaker;
     private MidiGenerator mMidiGenerator;
+
+    private Switch switchMusic;
+    private Boolean musicOn;
+    private TextView init;
 
     // get start time when connection is made and stop time when connection is stopped
     // this is for time stamping the text file
@@ -54,6 +68,15 @@ public class MainActivity extends AppCompatActivity {
 
         // create midi generator
         mMidiGenerator = new MidiGenerator(this);
+
+        switchMusic = (Switch) findViewById(R.id.switch1);
+        musicOn = true;
+        init = (TextView) findViewById(R.id.init_label);
+
+        if (switchMusic != null) {
+            switchMusic.setOnCheckedChangeListener(this);
+        }
+
     }
 
     @Override
@@ -128,6 +151,16 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        Toast.makeText(this, "The Switch is " + (isChecked ? "on" : "off"),
+                Toast.LENGTH_SHORT).show();
+        if(isChecked) {
+            musicOn = true;
+        } else {
+            musicOn = false;
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -170,9 +203,9 @@ public class MainActivity extends AppCompatActivity {
     private void updateUI() {
 
         if (mMusicMaker.getBVP_data().size() < 5000){
-            ((TextView) findViewById(R.id.init_label)).setText(String.format("Initializing..."));
+            init.setText("Initializing...");
         } else {
-            ((TextView) findViewById(R.id.init_label)).setText(String.format(""));
+            init.setText("");
             ((TextView) findViewById(R.id.skin_conductance_value)).setText(String.format("%.2f", mData[Data.TYPE_SC]));
             ((TextView) findViewById(R.id.temperature_value)).setText(String.format("%.2f", mData[Data.TYPE_TEMP]));
             ((TextView) findViewById(R.id.heart_rate_value)).setText(String.format("%.2f", mData[Data.TYPE_HR]));
@@ -243,7 +276,10 @@ public class MainActivity extends AppCompatActivity {
     };
 
     public void startMusic() {
-        mMusic.start();
+
+        if(musicOn) {
+            mMusic.start();
+        }
     }
 
     public void stopMusic() {
@@ -251,5 +287,4 @@ public class MainActivity extends AppCompatActivity {
         mMusicMaker.shutDown();
         clearTextView();
     }
-
 }

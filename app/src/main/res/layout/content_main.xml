@@ -13,9 +13,24 @@
     tools:context="com.dp.cecile.biomusic.MainActivity"
     tools:showIn="@layout/activity_main">
 
+
+    <Switch
+        android:id="@+id/switch1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="16dp"
+        android:checked="true"
+        android:padding="12dp"
+        android:text="Play Biomusic    "
+        android:textColor="@color/red"
+        android:textStyle="bold" />
+
     <TextView
         android:id="@+id/heart_rate_label"
         style="@style/label"
+        android:layout_below="@id/switch1"
         android:text="Pulse / Heart Rate (BPM) :" />
 
     <TextView
@@ -175,29 +190,30 @@
 
      </TableLayout>  -->
 
-     <TextView
-    android:id="@+id/emotion_title"
-    style="@style/title"
-    android:layout_marginTop="100dp"
-    android:layout_below="@id/temperature_label"
-    android:text="Emotion detected :" />
+    <TextView
+        android:id="@+id/emotion_title"
+        style="@style/title"
+        android:layout_below="@id/temperature_label"
+        android:layout_marginTop="100dp"
+        android:text="Emotion detected :" />
 
     <TextView
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_centerVertical="true"
-         android:layout_centerHorizontal="true"
-         android:id="@+id/init_label" />
+        android:id="@+id/init_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/temperature_label"
+        android:layout_marginTop="32dp"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:id="@+id/emotion_detected"
         style="@style/title"
-        android:text="Joy"
-        android:layout_marginTop="16dp"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
         android:layout_below="@+id/emotion_title"
-        android:visibility="invisible"
-        android:textSize="26sp" />
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="16dp"
+        android:text="Joy"
+        android:textSize="26sp"
+        android:visibility="invisible" />
 
 </RelativeLayout>
