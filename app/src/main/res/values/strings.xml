@@ -5,7 +5,8 @@
     <string name="save_signals">Save signals</string>
     <string name="reset_signals">Reset signals</string>
 
-    <string name="title_activity_splash">SplashActivity</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="drawer_open">Open Drawer</string>
+    <string name="drawer_close">Close Drawer</string>
+    <string name="title_activity_history">HistoryActivity</string>
+
 </resources>
