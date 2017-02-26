@@ -11,7 +11,7 @@ public class MidiGenerator implements MidiDriver.OnMidiStartListener {
     private MidiDriver midi;
     private MainActivity mActivity;
     char instruments[] = {0x75, 0x66, 0x36};
-    char volumes[] = {0x60, 0x7F, 0x30};
+    char volumes[] = {0x60, 0x30, 0x30};
 
     public MidiGenerator(MainActivity activity) {
 
