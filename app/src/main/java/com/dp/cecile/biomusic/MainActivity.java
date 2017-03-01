@@ -275,8 +275,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             }
         } else if (id == R.id.save_signals) {
             mFileManager.showConnectToDrive();
-        } else if (id == R.id.reset_signals) {
-            mMusicMaker.resetSignals();
         }
 
         return super.onOptionsItemSelected(item);
@@ -288,6 +286,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             return;
         }
         clearTextView();
+        mMusicMaker.resetSignals();
         mManagerDevice.connectDevice(device);
     }
 
@@ -353,32 +352,33 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         }
     }
 
-    Thread mMusic = new Thread() {
-        @Override
-        public void run() {
-            try {
+    public void startMusic() {
+
+        Thread mMusic = new Thread() {
+            @Override
+            public void run() {
+                try {
                     while (mMusicMaker.getBVP_data().size() < 5000) {
                         // wait
                     }
                     if (!isInterrupted()) {
                         mMusicMaker.parseData();
                     }
-            } catch (Exception e) {
-                e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-        }
-    };
-
-    public void startMusic() {
+        };
 
         if(musicOn) {
+            mMusicMaker.resume();
             mMusic.start();
         }
     }
 
     public void stopMusic() {
-        mMusic.interrupt(); //does this do anything?
         mMusicMaker.shutDown();
         clearTextView();
+        this.mData = new float[Data.ARRAY_SIZE];
     }
 }

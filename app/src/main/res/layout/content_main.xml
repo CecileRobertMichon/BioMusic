@@ -193,6 +193,7 @@
     <TextView
         android:id="@+id/emotion_title"
         style="@style/title"
+        android:visibility="invisible"
         android:layout_below="@id/temperature_label"
         android:layout_marginTop="100dp"
         android:text="Emotion detected :" />

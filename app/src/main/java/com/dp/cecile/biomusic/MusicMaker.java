@@ -171,7 +171,10 @@ public class MusicMaker {
     public void shutDown() {
         keepPlaying = false;
         midiGenerator.stopAllNotes();
-        //removeNoteOffEvents(Integer.MAX_VALUE, false, 0, 0);
+    }
+
+    public void resume() {
+        keepPlaying = true;
     }
 
 
