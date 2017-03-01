@@ -129,6 +129,12 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
     }
 
+    public void showSaveSessionDialog() {
+        SessionDialog dialog = new SessionDialog();
+        dialog.show(getSupportFragmentManager(), "session dialog");
+
+    }
+
     /* The click listner for ListView in the navigation drawer */
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override

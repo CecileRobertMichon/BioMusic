@@ -8,5 +8,7 @@
     <string name="drawer_open">Open Drawer</string>
     <string name="drawer_close">Close Drawer</string>
     <string name="title_activity_history">HistoryActivity</string>
+    <string name="save">Save</string>
+    <string name="discard">Discard</string>
 
 </resources>

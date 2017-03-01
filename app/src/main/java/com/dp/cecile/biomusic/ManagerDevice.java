@@ -94,6 +94,7 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 			mActivity.stopUpdateUIDataTimer();
 			mActivity.stopMusic();
 			mActivity.toastMessage("Disconnected.");
+			mActivity.showSaveSessionDialog();
 			break;
 		default:
 			break;
