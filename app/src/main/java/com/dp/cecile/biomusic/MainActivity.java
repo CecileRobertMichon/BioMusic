@@ -53,6 +53,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private CharSequence mTitle;
     private String[] mFragmentTitles;
 
+    SQLiteHelper sqLiteHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -126,6 +128,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         if (switchMusic != null) {
             switchMusic.setOnCheckedChangeListener(this);
         }
+
+        this.sqLiteHelper = SQLiteHelper.getInstance(MainActivity.this);
 
     }
 
