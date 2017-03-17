@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -105,7 +106,6 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
         private void selectItem(int position) {
-            // TODO open activity
             if(position == 0) {
                 Intent i = new Intent(this, MainActivity.class);
                 startActivity(i);
@@ -187,9 +187,11 @@ public class HistoryActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 if (which == 0) {
-
-                                   // TODO view details
-
+                                    Intent intent = new Intent(getApplicationContext(), SessionDetailActivity.class);
+                                    intent.putExtra("date", holder.date_data);
+                                    intent.putExtra("emotion", holder.emotion_data);
+                                    intent.putExtra("comment", holder.comment_data);
+                                    startActivity(intent);
                                 } else {
                                     AlertDialog.Builder deleteDialogOk = new AlertDialog.Builder(HistoryActivity.this);
                                     deleteDialogOk.setTitle("Delete Session?");
