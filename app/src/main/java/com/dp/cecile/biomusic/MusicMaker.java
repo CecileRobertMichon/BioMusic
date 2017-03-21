@@ -1,11 +1,7 @@
 package com.dp.cecile.biomusic;
 
-import android.util.IntProperty;
 import android.util.Log;
-
 import java.util.ArrayList;
-import java.util.concurrent.locks.Lock;
-
 import static java.lang.Math.abs;
 import static java.lang.Thread.sleep;
 

@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">bioMusic</string>
-    <string name="connect_device">Connect to device</string>
-    <string name="disconnect_device">Disconnect from device</string>
+    <string name="connect_device">Start Recording</string>
+    <string name="disconnect_device">Stop Recording</string>
     <string name="save_signals">Save signals</string>
     <string name="reset_signals">Reset signals</string>
 
