@@ -5,6 +5,7 @@
     <color name="yellow">#f9cb40</color>
 
     <color name="black_overlay">#66000000</color>
+    <item name="opaque" type="color">#cc000000</item>
 
     <!-- 3c91e6-ff5e5b-06d6a0-ff8a5b-f9cb40 -->
 </resources>

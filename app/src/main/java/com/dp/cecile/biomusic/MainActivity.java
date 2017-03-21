@@ -1,7 +1,9 @@
 package com.dp.cecile.biomusic;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
@@ -54,11 +56,19 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
     SQLiteHelper sqLiteHelper;
 
+    private SharedPreferences prefs;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        prefs = getPreferences(Context.MODE_PRIVATE);
+        if (prefs.getBoolean("firstLaunch", true)) {
+            prefs.edit().putBoolean("firstLaunch", false).commit();
+            startActivity(new Intent(getApplicationContext(), HelpActivity.class));
+        }
 
         mTitle = mDrawerTitle = getTitle();
         mFragmentTitles = new String[2];
@@ -284,6 +294,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             }
         } else if (id == R.id.save_signals) {
             mFileManager.showConnectToDrive();
+        } else if(id == R.id.help) {
+            startActivity(new Intent(getApplicationContext(), HelpActivity.class));
         }
 
         return super.onOptionsItemSelected(item);
