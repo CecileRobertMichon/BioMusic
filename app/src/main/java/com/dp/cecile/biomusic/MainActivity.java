@@ -2,6 +2,7 @@ package com.dp.cecile.biomusic;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -15,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.Switch;
@@ -24,7 +26,7 @@ import android.widget.Toast;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
+public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 
     private Timer mTimer;            //used to update UI
     private TimerTask mTimerTask;    //used to update UI
@@ -38,6 +40,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private MidiGenerator mMidiGenerator;
 
     private Switch switchMusic;
+    private Button startButton;
+    private Button stopButton;
     private Boolean musicOn;
     private TextView init;
 
@@ -138,6 +142,12 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             switchMusic.setOnCheckedChangeListener(this);
         }
 
+        startButton = (Button) findViewById(R.id.start_button);
+        stopButton = (Button) findViewById(R.id.stop_button);
+
+        startButton.setOnClickListener(this);
+        stopButton.setOnClickListener(this);
+
         this.sqLiteHelper = SQLiteHelper.getInstance(MainActivity.this);
 
     }
@@ -157,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     }
 
     private void selectItem(int position) {
-        if(position == 1) {
+        if (position == 1) {
             Intent i = new Intent(this, HistoryActivity.class);
             startActivity(i);
         }
@@ -189,8 +199,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
 
     @Override
-    protected void onResume()
-    {
+    protected void onResume() {
         super.onResume();
 
         // Start midi
@@ -200,8 +209,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     }
 
     @Override
-    protected void onPause()
-    {
+    protected void onPause() {
         super.onPause();
 
         // Stop midi
@@ -263,7 +271,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         Toast.makeText(this, "Biomusic turned " + (isChecked ? "on" : "off"),
                 Toast.LENGTH_SHORT).show();
-        if(isChecked) {
+        if (isChecked) {
             musicOn = true;
         } else {
             musicOn = false;
@@ -282,19 +290,9 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         }
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.disconnect_device) {
-            mManagerDevice.getDeviceService().disconnect();
-        } else if (id == R.id.connect_device) {
-            if (mManagerDevice.getDeviceService().isBTEnabled()) {
-                //show list of devices paired
-                mBluetoothDialog.showDeviceList();
-            } else {
-                // enable Bluetooth first and show list of devices paired
-                mBluetoothDialog.showEnableBTDialog();
-            }
-        } else if (id == R.id.save_signals) {
+        if (id == R.id.save_signals) {
             mFileManager.showConnectToDrive();
-        } else if(id == R.id.help) {
+        } else if (id == R.id.help) {
             startActivity(new Intent(getApplicationContext(), HelpActivity.class));
         }
 
@@ -316,7 +314,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
      */
     private void updateUI() {
 
-        if (mMusicMaker.getBVP_data().size() < 5000){
+        if (mMusicMaker.getBVP_data().size() < 5000) {
             init.setText("Initializing...");
         } else {
             init.setText("");
@@ -373,6 +371,23 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         }
     }
 
+    public void switchButtons() {
+        runOnUiThread(new Runnable() {
+            @Override public void run() {
+                Button start = (Button) findViewById(R.id.start_button);
+                Button stop = (Button) findViewById(R.id.stop_button);
+                if (start.getVisibility() == View.VISIBLE)
+                {
+                    start.setVisibility(View.GONE);
+                    stop.setVisibility(View.VISIBLE);
+                } else {
+                    start.setVisibility(View.VISIBLE);
+                    stop.setVisibility(View.GONE);
+                }
+            }
+        });
+    }
+
     public void startMusic() {
 
         Thread mMusic = new Thread() {
@@ -402,4 +417,29 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         clearTextView();
         this.mData = new float[Data.ARRAY_SIZE];
     }
+
+    @Override
+    public void onClick(View v) {
+        // do something when the button is clicked
+        // Yes we will handle click here but which button clicked??? We don't know
+
+        // So we will make
+        switch (v.getId() /*to get clicked view id**/) {
+            case R.id.start_button:
+                if (mManagerDevice.getDeviceService().isBTEnabled()) {
+                    //show list of devices paired
+                    mBluetoothDialog.showDeviceList();
+                } else {
+                    // enable Bluetooth first and show list of devices paired
+                    mBluetoothDialog.showEnableBTDialog();
+                }
+                break;
+            case R.id.stop_button:
+                mManagerDevice.getDeviceService().disconnect();
+                break;
+            default:
+                break;
+        }
+    }
+
 }

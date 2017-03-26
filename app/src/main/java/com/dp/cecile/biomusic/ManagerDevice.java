@@ -83,6 +83,7 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 			mActivity.startUpdateUIDataTimer();	//start timer to update UI
 			mActivity.startMusic();
 			mActivity.toastMessage("Connected successfully!");
+			mActivity.switchButtons();
 			break;
 			
 		case CONNECT_FAILURE:
@@ -95,6 +96,7 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 			mActivity.stopMusic();
 			mActivity.toastMessage("Disconnected.");
 			mActivity.showSaveSessionDialog();
+			mActivity.switchButtons();
 			break;
 		default:
 			break;
