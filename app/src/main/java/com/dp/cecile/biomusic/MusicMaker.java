@@ -441,9 +441,9 @@ public class MusicMaker {
             stopTempChords(index);
 
             if(old_slope < tempSlope)
-                --temperatureOffset; // down a semitone
+                temperatureOffset -= 7; // down 5 tones
             else
-                ++temperatureOffset; // up a semitone
+                temperatureOffset += 7; // up 5 tones
 
             startTempChords(index);
         }
