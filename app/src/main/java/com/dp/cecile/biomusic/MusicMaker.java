@@ -48,7 +48,7 @@ public class MusicMaker {
         this.tempSlope = MusicConstants.INITIALIZATION_NUMBER;
         this.tempIntercept = MusicConstants.INITIALIZATION_NUMBER;
         this.tempFirstPoint = MusicConstants.INITIALIZATION_NUMBER;
-        this.tempSSThreshhold = 0.002F;
+        this.tempSSThreshhold = 0.004F;
         this.noteExtended = false;
         this.keepPlaying = true;
 
