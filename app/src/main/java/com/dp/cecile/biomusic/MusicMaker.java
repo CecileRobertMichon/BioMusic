@@ -441,9 +441,9 @@ public class MusicMaker {
             stopTempChords(index);
 
             if(old_slope < tempSlope)
-                temperatureOffset -= 7; // down 5 tones
+                temperatureOffset -= 7; // down 5 tones -- Circle of Fifths
             else
-                temperatureOffset += 7; // up 5 tones
+                temperatureOffset += 7; // up 5 tones -- Circle of Fifths
 
             startTempChords(index);
         }
