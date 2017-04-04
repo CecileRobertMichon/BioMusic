@@ -1,5 +1,6 @@
 package com.dp.cecile.biomusic;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 
 import com.thoughttechnology.api.listener.BvpListener;
@@ -36,6 +37,7 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 	private SmoothData bvpBuffer = new SmoothData(MusicConstants.WINDOW_SIZE);
 	private SmoothData tempBuffer = new SmoothData(MusicConstants.WINDOW_SIZE);
 	private SmoothData edaBuffer = new SmoothData(MusicConstants.WINDOW_SIZE);
+    private ProgressDialog dialog;
 
 	public ManagerDevice(MainActivity activity) {
 
@@ -60,6 +62,8 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 	 */
 	public void connectDevice(String name) {
 		//do connection
+        dialog = ProgressDialog.show(mActivity, "",
+				"Connecting...", true);
 		mDeviceService.connect(mDeviceService.getMacAddressByName(name), this);
 	}
 
@@ -84,10 +88,12 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 			mActivity.startMusic();
 			mActivity.toastMessage("Connected successfully!");
 			mActivity.switchButtons();
+			dialog.dismiss();
 			break;
 			
 		case CONNECT_FAILURE:
-			mActivity.toastMessage("Failed to connect ");
+            dialog.dismiss();
+            mActivity.toastMessage("Failed to connect ");
 			break;
 		
 		case DISCONNECTED:
@@ -97,6 +103,7 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 			mActivity.toastMessage("Disconnected.");
 			mActivity.showSaveSessionDialog();
 			mActivity.switchButtons();
+            reset();
 			break;
 		default:
 			break;
@@ -159,5 +166,14 @@ public class ManagerDevice implements DataListener, DeviceStateChangeListener {
 			}
 		});
 	}
+
+	private void reset(){
+        this.bvpBuffer.clear();
+        this.tempBuffer.clear();
+        this.edaBuffer.clear();
+        this.currentEda = 0;
+        this.currentTemp = 0;
+    }
+
 
 }

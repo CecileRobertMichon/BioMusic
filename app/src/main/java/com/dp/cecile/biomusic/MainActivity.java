@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     private Button stopButton;
     private Boolean musicOn;
     private TextView init;
+    private Boolean mplaying;
 
     // get start time when connection is made and stop time when connection is stopped
     // this is for time stamping the text file
@@ -313,7 +314,9 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
      * Update the UI
      */
     private void updateUI() {
-
+        if(!mplaying) {
+            return;
+        }
         if (mMusicMaker.getBVP_data().size() < 5000) {
             init.setText("Initializing...");
         } else {
@@ -369,6 +372,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             mTimer.purge();
             mTimer = null;
         }
+        clearTextView();
     }
 
     public void switchButtons() {
@@ -410,10 +414,14 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             mMusicMaker.resume();
             mMusic.start();
         }
+
+        mplaying = true;
     }
 
     public void stopMusic() {
+        mplaying = false;
         mMusicMaker.shutDown();
+        mMusicMaker = new MusicMaker(this);
         clearTextView();
         this.mData = new float[Data.ARRAY_SIZE];
     }

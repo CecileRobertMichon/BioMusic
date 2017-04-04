@@ -48,7 +48,7 @@ public class MusicMaker {
         this.tempSlope = MusicConstants.INITIALIZATION_NUMBER;
         this.tempIntercept = MusicConstants.INITIALIZATION_NUMBER;
         this.tempFirstPoint = MusicConstants.INITIALIZATION_NUMBER;
-        this.tempSSThreshhold = 0.004F;
+        this.tempSSThreshhold = 0.01F;
         this.noteExtended = false;
         this.keepPlaying = true;
 
@@ -167,6 +167,7 @@ public class MusicMaker {
     public void shutDown() {
         keepPlaying = false;
         midiGenerator.stopAllNotes();
+        resetSignals();
     }
 
     public void resume() {
