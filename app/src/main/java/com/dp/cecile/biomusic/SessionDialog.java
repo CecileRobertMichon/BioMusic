@@ -17,7 +17,7 @@ import android.widget.EditText;
 public class SessionDialog extends DialogFragment {
 
     CharSequence[] emotions = {"Anger", "Fear", "Disgust", "Enjoyment", "Sadness", "Other"};
-    String selected;
+    String selected = "Other";
     MainActivity mActivity;
 
     @Override

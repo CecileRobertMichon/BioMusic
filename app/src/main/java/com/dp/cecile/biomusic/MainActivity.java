@@ -392,6 +392,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         });
     }
 
+    // Start the music maker
     public void startMusic() {
 
         Thread mMusic = new Thread() {
@@ -418,6 +419,7 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         mplaying = true;
     }
 
+    // reset everything
     public void stopMusic() {
         mplaying = false;
         mMusicMaker.shutDown();
