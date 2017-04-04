@@ -14,7 +14,7 @@
     <string name="help_page_intro">This is the help page</string>
     <string name="help_text">To record a session:\n
                                 \t \t 1. Make sure your device is ON and paired with your phone (go to bluetooth settings to pair the device if not)\n
-                                \t \t2. Click START"\n\nTo stop the music / end the session, select "STOP" from the same menu.\n\nTo record a session without playing Biomusic, uncheck the "Play Biomusic" switch on the home page before clicking "START".\n\nMake sure your finger is correctly placed on the TPS as follows:</string>
+                                \t \t2. Click START"\n\nTo stop the music / end the session, select "STOP" from the same menu.\n\nTo record a session without playing Biomusic, uncheck the "Play Sound" switch on the home page before clicking "START".\n\nMake sure your finger is correctly placed on the TPS as follows:</string>
 
 
 </resources>
