@@ -395,6 +395,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     // Start the music maker
     public void startMusic() {
 
+        mMusicMaker = new MusicMaker(this);
+
         Thread mMusic = new Thread() {
             @Override
             public void run() {
@@ -423,7 +425,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     public void stopMusic() {
         mplaying = false;
         mMusicMaker.shutDown();
-        mMusicMaker = new MusicMaker(this);
         clearTextView();
         this.mData = new float[Data.ARRAY_SIZE];
     }

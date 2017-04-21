@@ -183,7 +183,7 @@ public class MusicMaker {
     public void shutDown() {
         keepPlaying = false;
         midiGenerator.stopAllNotes();
-        resetSignals();
+        //resetSignals();  // removed to make drive export work
     }
 
     public void resume() {
